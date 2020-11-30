@@ -213,4 +213,4 @@ if __name__ == "__main__":
 
     print("Success! : 画像の取得が完了しました")
     # 処理が終了したら一時ファイルを削除する
-    os.remove(temp_file_name)
+
