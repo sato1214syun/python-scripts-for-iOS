@@ -10,6 +10,7 @@ black = "*"
 [packages]
 nhentai = "*"
 tqdm = "*"
+youtube-dl = "*"
 
 [requires]
 python_version = "3.7"

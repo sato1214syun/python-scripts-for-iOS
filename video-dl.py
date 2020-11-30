@@ -1,6 +1,7 @@
 import sys
 import youtube_dl
 import os
+import background as bg
 
 workDir = "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
 saveDir = "/Video"
@@ -23,7 +24,8 @@ os.makedirs(savePath, exist_ok=True)
 
 print("video downloading...")
 
-with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-    ydl.download([url])
+with bg.BackgroundTask() as b:
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
 
 print("finish")
