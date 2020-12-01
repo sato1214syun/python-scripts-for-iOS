@@ -16,7 +16,7 @@ from pprint import pprint
 
 
 #dropboxアクセス用の情報
-TOKEN = "k1J--mH7ibUAAAAAAAA7ICOTMh7vFBwbZ-4955VnUzgFab3nZsivnKT_u3Fsjcbj"
+TOKEN = ""
 fileName = "交通費計算.xlsx"
 tempFileName = "temp_{}".format(fileName)
 tempFilePath = "./{}".format(tempFileName)
