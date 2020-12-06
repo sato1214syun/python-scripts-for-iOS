@@ -152,6 +152,7 @@ def downloadByPython(img_info_dict, temp_file_name):
         print("画像フォルダを圧縮中...")
         shutil.make_archive(save_dir, "zip", zip_save_dir, title)
         shutil.rmtree(save_dir)  # フォルダを削除
+        b.stop()
 
 
 def CheckUrl(url):
