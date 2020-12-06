@@ -11,6 +11,11 @@ black = "*"
 nhentai = "*"
 tqdm = "*"
 youtube-dl = "*"
+beautifulsoup4 = "*"
+markdown = "*"
+requests = "*"
+lxml = "*"
+requests-html = "*"
 
 [requires]
 python_version = "3.7"
