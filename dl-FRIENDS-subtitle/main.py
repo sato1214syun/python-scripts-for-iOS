@@ -9,10 +9,8 @@ from typing_extensions import Literal
 
 
 def ParseText(text_list: List[str]):
-    is_first_part: bool = False
+    block_type: Optional[str] = "quotes"  # part2(その2)以降の記事はセリフのブロックから始まるのでquotesに設定
     is_skip_line_cnt: int = 0
-    is_in_quote: bool = False
-    is_in_jpn_quote: bool = False
     eng_title: Optional[str] = None
     jpn_title: Optional[str] = None
     ori_title_in_jpn: Optional[str] = None
@@ -23,64 +21,86 @@ def ParseText(text_list: List[str]):
     eng_quote: Optional[str] = None
     jpn_quote: Optional[str] = None
 
-    for line in text_list:
-        if "（Rach" in line:
+    for line, next_line in zip(text_list[:-2], text_list[1:]):
+        if line == "区切り" and next_line == "区切り":  # ここからは作者の通知なので不要
             break
         if is_skip_line_cnt > 0:
             is_skip_line_cnt -= 1
             continue
+
+        # もしシーズン番号などがあればそのブロックはtitle
         if re.match(r"シーズン\s*[０-９0-9]+\s*第\s*[０-９0-9]+\s*話", line):
-            is_first_part = True
+            block_type = "title"
             continue
-        if is_first_part is True and (eng_title is None or jpn_title is None):
-            temp_title_list = line.replace("）", "").split("（")
-            eng_title, jpn_title = [title.strip() for title in temp_title_list]
-            continue
-        if is_first_part is True and ori_title_in_jpn is None:
-            ori_title_in_jpn = line.split("「")[1].replace("」", "")
-            continue
-        if line.find("[Scene: ") == 0:  # 場面の説明なので飛ばす
-            is_skip_line_cnt = 1  # 次の1行も場面の解説(日本語)なので飛ばす
-            continue
-        if line.find("(") == 0:  # 場面説明なのでスキップ
-            continue
+        if block_type == "title":
+            if eng_title is None or jpn_title is None:
+                temp_title_list = line.replace("）", "").split("（")
+                eng_title, jpn_title = [title.strip() for title in temp_title_list]
+                continue
+            if ori_title_in_jpn is None:
+                ori_title_in_jpn = line.split("「")[1].replace("」", "")
+                continue
+            if line == "区切り":
+                block_type = "quotes"
+                continue
 
-        # 1セリフ終了の場合は変数に格納し、フラグを初期化
-        if is_in_quote is True and is_in_jpn_quote is True and "（" not in line:
-            eng_subtitle_list.append({"name": name, "quote": eng_quote})
-            jpn_transcript_list.append({"name": name, "quote": jpn_quote})
-            is_in_quote = False
-            is_in_jpn_quote = False
-
-        # 話者とセリフの抽出
-        # 話者
-        matched_group = re.match(r"^([ァ-ヴー・]+):\s?$", line)
-        if matched_group is not None:
-            is_in_quote = True
-            name = matched_group.group(1)
-            eng_quote = None
-            jpn_quote = None
-            continue
-        # セリフ(英語)
-        if is_in_quote is True and "<strong>" in line:
-            temp_quote = re.sub(r"</?strong>", "", line)
-            if eng_quote is None:
-                eng_quote = temp_quote
-            else:
-                eng_quote += "\n{}".format(temp_quote)
-            continue
-        # セリフ(日本語)
-        if is_in_quote is True and line.find("（") == 0:
-            is_in_jpn_quote = True
-            temp_quote = re.sub(r"[（）]", "", line).strip()
-            if jpn_quote is None:
-                jpn_quote = temp_quote
-            else:
-                jpn_quote += "\n{}".format(temp_quote)
-            continue
+        # セリフのブロックquotes
+        if block_type == "quotes":
+            if line.find("[Scene: ") == 0:  # 場面の説明なので飛ばす
+                is_skip_line_cnt = 1  # 次の1行も場面の解説(日本語)なので飛ばす
+                continue
+            # 話者の抽出
+            if re.match(r"^([ァ-ヴー・]+):$", line) is not None:
+                # eng_quoteとjpn_quoteがNoneでない場合(直前にセリフがある場合)はリストに格納
+                if eng_quote is not None and jpn_quote is not None:
+                    eng_subtitle_list.append({"name": name, "quote": eng_quote})
+                    jpn_transcript_list.append({"name": name, "quote": jpn_quote})
+                # 話者の名前を入れて、セリフを初期化
+                name = line.replace(":", "")
+                eng_quote = None
+                jpn_quote = None
+                continue
+            # セリフ(英語)の抽出
+            if "<strong>" in line:
+                temp_quote = re.sub(r"</?strong>", "", line)
+                if eng_quote is None:
+                    eng_quote = temp_quote
+                else:
+                    eng_quote += "\n{}".format(temp_quote)
+                continue
+            # brackets(括弧)で囲まれている場合は、日本語のセリフの場合と、英語の場面説明の場合があるので判別
+            if re.match(r"^[\(（].+[\)）]$", line) is not None:
+                temp_quote = re.sub(r"^[\(（]|[\)）]$", "", line).strip()
+                if re.match(
+                    r"^[a-zA-Z0-9!-/:-@¥[-`{-~]*$", temp_quote
+                ):  # 英数字記号のみの場合は英語の場面説明
+                    continue
+                else:
+                    if jpn_quote is None:
+                        jpn_quote = temp_quote
+                    else:
+                        jpn_quote += "\n{}".format(temp_quote)
+                    continue
+            if line == "区切り":
+                # eng_quoteとjpn_quoteがNoneでない場合(直前にセリフがある場合)はリストに格納
+                if eng_quote is not None and jpn_quote is not None:
+                    eng_subtitle_list.append({"name": name, "quote": eng_quote})
+                    jpn_transcript_list.append({"name": name, "quote": jpn_quote})
+                block_type = "commentary"
+                continue
 
         # ブログの作者の解説
-        jpn_commentary.append(line)
+        if block_type == "commentary":
+            if line == "区切り":
+                temp_commentary = "\n{}".format(next_line)
+                is_skip_line_cnt = 1  # すでに変数に入れてしまったので、次の行はスキップ
+                jpn_commentary.append(temp_commentary)
+                continue
+            else:
+                temp_commentary = line
+                jpn_commentary.append(temp_commentary)
+                continue
+    print(("\n").join(jpn_commentary))
     return (
         eng_title,
         jpn_title,
@@ -165,13 +185,21 @@ if __name__ == "__main__":
             with open(res_pickle_path, "wb") as f:
                 pickle.dump(res, f)
 
-        # 記事の中身を解析する
+        # 記事の中身を抽出して前処理
         text_list: List[str] = list(map(str, soup.find("div", class_="text").contents))
-        text_list = [
-            text.replace("\u3000", " ").strip()
-            for text in text_list
+        temp_text_list = [
+            "区切り"
+            if text1 == "<br/>" and text2 == "<br/>"
+            else text1.replace("\u3000", " ").strip()
+            for text1, text2 in zip(text_list[:-2], text_list[1:])
+        ]
+        organized_text_list = [
+            text
+            for text in temp_text_list
             if re.match(r"^<(?!strong).+>.*$|<div.+|\n", text) is None
         ]
+
+        # 記事を解析する
         (
             eng_title,
             jpn_title,
@@ -179,5 +207,5 @@ if __name__ == "__main__":
             eng_subtitle_list,
             jpn_transcript_list,
             jpn_commentary,
-        ) = ParseText(text_list)
+        ) = ParseText(organized_text_list)
         print(eng_title)
