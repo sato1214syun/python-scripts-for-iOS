@@ -70,9 +70,9 @@ def ParseText(text_list: List[str]):
                 continue
             # brackets(括弧)で囲まれている場合は、日本語のセリフの場合と、英語の場面説明の場合があるので判別
             if re.match(r"^[\(（].+[\)）]$", line) is not None:
-                temp_quote = re.sub(r"^[\(（]|[\)）]$", "", line).strip()
+                temp_quote = re.sub(r"^[ -~\n]+$", "", line).strip()
                 if re.match(
-                    r"^[a-zA-Z0-9!-/:-@¥[-`{-~]*$", temp_quote
+                    r"^[a-zA-Z0-9!\-\/:-@¥[-`{-~\s]*$", temp_quote
                 ):  # 英数字記号のみの場合は英語の場面説明
                     continue
                 else:
