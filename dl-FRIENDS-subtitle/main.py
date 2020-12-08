@@ -8,6 +8,16 @@ from bs4 import BeautifulSoup as bs
 from typing_extensions import Literal
 
 
+def delete_tag(s):
+    regex_pattern = r"<.*?>"
+    s = re.sub(regex_pattern, "", s)
+    """ recursive processing """
+    if re.search(regex_pattern, s):
+        delete_tag(s)
+    else:
+        return s
+
+
 def ParseText(text_list: List[str]):
     block_type: Optional[str] = "quotes"  # part2(その2)以降の記事はセリフのブロックから始まるのでquotesに設定
     is_skip_line_cnt: int = 0
@@ -97,10 +107,9 @@ def ParseText(text_list: List[str]):
                 jpn_commentary.append(temp_commentary)
                 continue
             else:
-                temp_commentary = line
+                temp_commentary = delete_tag(line)
                 jpn_commentary.append(temp_commentary)
                 continue
-    print(("\n").join(jpn_commentary))
     return (
         eng_title,
         jpn_title,
@@ -113,7 +122,7 @@ def ParseText(text_list: List[str]):
 
 if __name__ == "__main__":
     first_part_url: Literal = (
-        r"https://sitcom-friends-eng.seesaa.net/article/388471106.html"
+        r"https://sitcom-friends-eng.seesaa.net/article/388471107.html"
     )
     regex_pattern1: Literal = r"(^https?://.+/)\d+\.html"
     base_url: str = re.match(regex_pattern1, first_part_url).group(1)
@@ -186,6 +195,7 @@ if __name__ == "__main__":
                 pickle.dump(res, f)
 
         # 記事の中身を抽出して前処理
+        # text_list: List[str] = soup.find("div", class_="text").text
         text_list: List[str] = list(map(str, soup.find("div", class_="text").contents))
         temp_text_list = [
             "区切り"
@@ -193,11 +203,7 @@ if __name__ == "__main__":
             else text1.replace("\u3000", " ").strip()
             for text1, text2 in zip(text_list[:-2], text_list[1:])
         ]
-        organized_text_list = [
-            text
-            for text in temp_text_list
-            if re.match(r"^<(?!strong).+>.*$|<div.+|\n", text) is None
-        ]
+        organized_text_list = [text for text in temp_text_list if text != "<br/>"]
 
         # 記事を解析する
         (
@@ -208,4 +214,3 @@ if __name__ == "__main__":
             jpn_transcript_list,
             jpn_commentary,
         ) = ParseText(organized_text_list)
-        print(eng_title)
