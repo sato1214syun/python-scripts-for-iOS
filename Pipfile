@@ -16,6 +16,7 @@ markdown = "*"
 requests = "*"
 lxml = "*"
 urllib3 = "*"
+flask = "*"
 
 [requires]
 python_version = "3.7"
