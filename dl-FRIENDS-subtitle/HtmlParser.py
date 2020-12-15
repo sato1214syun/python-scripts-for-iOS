@@ -73,7 +73,13 @@ def ParseText(
                 # is_skip_line_cnt = 1  # 次の1行も場面の解説(日本語)なので飛ばす
                 continue
             # 話者の抽出(漢字、ひらがな、カタカナ)
-            if re.match(r"^([p{Script=Han}ぁ-ゟァ-ヴー・]+):$", line) is not None:
+            if (
+                re.match(
+                    r"^([\u2E80-\u2FDF\u3005-\u3007\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\U00020000-\U0002EBEFぁ-ゟァ-ヴー・]+):$",
+                    line,
+                )
+                is not None
+            ):
                 # eng_quoteとjpn_quoteがNoneでない場合(直前にセリフがある場合)はリストに格納
                 if (
                     speaker is not None
