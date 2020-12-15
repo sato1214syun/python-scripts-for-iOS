@@ -1,6 +1,6 @@
 import http.server
-import socketserver
 import os
+import socketserver
 
 import background as bg
 
@@ -14,4 +14,3 @@ with bg.BackgroundTask() as b:
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
         print("serving at port", PORT)
         httpd.serve_forever()
-    
