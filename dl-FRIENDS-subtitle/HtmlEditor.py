@@ -1,5 +1,4 @@
 import os
-from copy import deepcopy
 from shutil import copy2, copytree, rmtree
 from typing import Dict, List
 import re
@@ -152,30 +151,33 @@ def EditArticleHtml(
         f.write(soup.prettify(formatter="html5"))
 
 
-def SidebarLinkConverter(sidebar_tag_in_index):
+def SidebarLinkConverter(sidebar_tags):
+    index_dir_path = os.path.dirname(index_path)
+    # index.htmlのサイドバーのリンクをすべて取得
+    a_tag_list = sidebar_tags.find_all("a")
+    ori_abs_link_list = [
+        os.path.normpath(os.path.join(index_dir_path, a_tag.attrs["href"]))
+        for a_tag in a_tag_list
+    ]
     # template/article/内の全てのepisode/htmlのパスを取得
     ep_html_path_list: List[str] = []
-    for cur_dir, _, file_name_list in os.walk(current_dir):
+    for cur_dir, _, file_name_list in os.walk(article_dir_path):
         for file_name in file_name_list:
             ep_html_path_list.append(os.path.join(cur_dir, file_name))
 
     for ep_html_path in ep_html_path_list:
-        sidebar_tag_in_ep_html = deepcopy(sidebar_tag_in_index)
-        a_tag_list = sidebar_tag_in_ep_html.find_all("a")
-        index_dir_path = os.path.dirname(index_path)
-        for a_tag in a_tag_list:
-            rel_link_in_index = a_tag.attrs["href"].string
-            abs_link_in_index = os.path.normpath(
-                os.path.join(index_dir_path, rel_link_in_index)
-            )
-            rel_link_for_ep_html = os.path.relpath(abs_link_in_index, ep_html_path)
+        ep_html_dir_path = os.path.dirname(ep_html_path)
+        for a_tag, ori_abs_link in zip(a_tag_list, ori_abs_link_list):
+            if ".html" not in ori_abs_link:
+                continue
+            rel_link_for_ep_html = os.path.relpath(ori_abs_link, ep_html_dir_path)
             a_tag.attrs["href"] = rel_link_for_ep_html
         # episode.htmlを読み込み
         with open(ep_html_path, "r", encoding="utf-8") as f:
             ep_html = f.read()
         soup: bs = bs(ep_html, "lxml")
-        ori_sidebar_tag = soup.find("div", id="sidebar")
-        ori_sidebar_tag.replace_with(sidebar_tag_in_ep_html)
+        ep_sidebar_tags = soup.find("div", id="sidebar")
+        ep_sidebar_tags.replace_with(sidebar_tags)
 
         # 保存
         with open(os.path.join(ep_html_path), "w", encoding="utf-8") as f:
@@ -183,43 +185,4 @@ def SidebarLinkConverter(sidebar_tag_in_index):
 
 
 if __name__ == "__main__":
-    subtitle: List[List[Dict[str, str]]] = [
-        [
-            {
-                "speaker": "speaker1",
-                "en_quote": "English quote1",
-                "jp_quote": "Japanese Quote1",
-            },
-            {
-                "speaker": "speaker2",
-                "en_quote": "English quote2",
-                "jp_quote": "Japanese Quote2",
-            },
-        ],
-        [
-            {
-                "speaker": "speaker3",
-                "en_quote": "English quote3",
-                "jp_quote": "Japanese Quote3",
-            },
-            {
-                "speaker": "speaker4",
-                "en_quote": "English quote4",
-                "jp_quote": "Japanese Quote4",
-            },
-        ],
-    ]
-
-    commentary_list: List[List[str]] = [
-        ["part1_commentary1.part1_commentary2", "part1_commentary3.part1_commentary4"],
-        ["part2_commentary1.part2_commentary2", "part2_commentary3.part2_commentary4"],
-    ]
-    EditArticleHtml(
-        season=3,
-        episode=11,
-        title="test",
-        subtitle=subtitle,
-        commentary_list=commentary_list,
-    )
-    sidebar_tag_in_index = EditIndexHtml(season=3, episode=11, title="test")
-    SidebarLinkConverter(sidebar_tag_in_index)
+    ...

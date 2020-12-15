@@ -31,7 +31,7 @@ def ReadWebPage(
 
 if __name__ == "__main__":
     # first_part_url: str = sys.argv[0]
-    first_part_url = r"https://sitcom-friends-eng.seesaa.net/article/388471106.html"
+    first_part_url = r"https://sitcom-friends-eng.seesaa.net/article/388471151.html"
 
     regex_for_url: str = r"(^https?://.+/)\d+\.html"
     match_group = re.match(regex_for_url, first_part_url)
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     # webページをurlかPickleから読み込み
     article_url = web_page_base_url + str(article_no) + ".html"
-    pickle_file_path = os.path.join(pickle_save_dir_path, article_no)
+    pickle_file_path = os.path.join(pickle_save_dir_path, "{}.pickle".format(article_no))
     res = ReadWebPage(article_url, pickle_file_path)
 
     soup: bs = None
@@ -166,3 +166,5 @@ if __name__ == "__main__":
     )
     print("\n既存の記事のサイドバーのリンクを修正しています")
     SidebarLinkConverter(sidebar_tag_in_index)
+
+    print("完了しました")
