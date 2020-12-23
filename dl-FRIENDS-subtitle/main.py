@@ -55,7 +55,9 @@ if __name__ == "__main__":
 
     # webページをurlかPickleから読み込み
     article_url = web_page_base_url + str(article_no) + ".html"
-    pickle_file_path = os.path.join(pickle_save_dir_path, "{}.pickle".format(article_no))
+    pickle_file_path = os.path.join(
+        pickle_save_dir_path, "{}.pickle".format(article_no)
+    )
     res = ReadWebPage(article_url, pickle_file_path)
 
     soup: bs = None
