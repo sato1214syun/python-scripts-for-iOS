@@ -16,10 +16,12 @@ from tqdm import tqdm
 try:
     import background as bg
     import pasteboard
-except Exception as e:
+except ImportError:
+    print("\nbackgroundとpasteboardをインポートできませんでした。iOSアプリのpyto以外で実行している可能性があります")
     import pyperclip
 
 import shutil
+
 
 from NHentai import NHentai
 
@@ -31,7 +33,7 @@ def CollectImage(url, temp_file_name):
     # extract mediaData
     media_info_dict = GetMediaData(url)
     img_info_dict = GetImageInfo(media_info_dict)  # get img data
-    ImageDownload(img_info_dict, temp_file_name)
+    ImageDownload(img_info_dict)
     return
 
 
@@ -73,7 +75,11 @@ def htmlDownload(url):
 def GetImageInfo(media_info_dict):
     print("画像urlを取得中...")
     img_info_dict = {}
-    img_info_dict["title"] = media_info_dict["secondary_title"].replace("/", "_")
+    if media_info_dict["secondary_title"] != "":
+        img_info_dict["title"] = media_info_dict["secondary_title"].replace("/", "_")
+    else:
+        img_info_dict["title"] = media_info_dict["title"].replace("/", "_")
+
     img_info_dict["num_of_pages"] = int(media_info_dict["pages"][0])
     img_url_list = media_info_dict["images"]
     file_ext_list = [img_url.split(".")[-1] for img_url in img_url_list]
@@ -85,11 +91,11 @@ def GetImageInfo(media_info_dict):
     return img_info_dict
 
 
-def ImageDownload(img_info_dict, temp_file_name):
-    downloadByPython(img_info_dict, temp_file_name)
+def ImageDownload(img_info_dict):
+    downloadByPython(img_info_dict)
 
 
-def downloadByPython(img_info_dict, temp_file_name):
+def downloadByPython(img_info_dict):
     num_of_pages = img_info_dict["num_of_pages"]
     title = img_info_dict["title"]
     headers = {"User-Agent": "Magic Browser", "Accept-encoding": "gzip"}
@@ -97,7 +103,7 @@ def downloadByPython(img_info_dict, temp_file_name):
         "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
     )
     if os.path.exists(work_dir) is False:
-        work_dir = os.dirname(__file__)
+        work_dir = os.path.dirname(__file__)
     zip_save_dir = os.path.join(work_dir, "nsfw_book")
     save_dir = os.path.join(zip_save_dir, title)
 
@@ -106,125 +112,76 @@ def downloadByPython(img_info_dict, temp_file_name):
 
     if "background" in sys.modules:
         with bg.BackgroundTask() as b:
-            # ページ数の桁数を決定する
-            std_page_digit = 3
-            page_digit = len(str(num_of_pages))
-            if page_digit > std_page_digit:
-                std_page_digit = page_digit + 1
-
-            # 画像をダウンロードする
-            for page_cnt, (dl_url, ext) in enumerate(
-                img_info_dict["url_ext_list"].items(), start=1
-            ):
-                page_no = str(page_cnt).zfill(std_page_digit)  # 桁数そろえ
-                file_name = "{}.{}".format(page_no, ext)
-                try:
-                    while True:
-                        save_path = os.path.join(save_dir, file_name)  # 保存パスを決定
-                        if os.path.isfile(save_path):  # 同名ファイルが存在する場合はダウンロードをスキップ
-                            print("{}枚目の画像は保存済みなのでスキップします".format(page_cnt))
-                            raise Exception()
-                        # 画像をダウンロード
-                        try:
-                            res = rq.get(
-                                dl_url,
-                                headers=headers,
-                                stream=True,
-                                timeout=5
-                            )
-                            break
-                        except rq.Timeout:
-                            print("タイムアウトのため{}枚目の画像をスキップします".format(page_cnt))
-
-                    # 有効なurlから画像をダウンロード
-                    if res.status_code != 200:  # if invalid url
-                        continue
-                    file_size = int(res.headers["content-length"])
-                    chunk = 1
-                    chunk_size = 1024
-                    num_bars = int(file_size / chunk_size)
-                    progress = "{}/{}枚".format(page_cnt, num_of_pages)
-                    with open(save_path, "wb") as f:
-                        for chunk in tqdm(
-                            res.iter_content(chunk_size=chunk_size),
-                            total=num_bars,
-                            unit="KB",
-                            desc=progress,
-                            leave=True,
-                        ):
-                            f.write(chunk)
-                except Exception as e:
-                    """
-                    if e:
-                        print('=== エラー内容 ===')
-                        print('type:' + str(type(e)))
-                        print('args:' + str(e.args))
-                        print('message:' + e.message)
-                        print('e自身:' + str(e))
-                    """
-                    continue
-            # zipに圧縮
-            print("画像フォルダを圧縮中...")
-            shutil.make_archive(save_dir, "zip", zip_save_dir, title)
-            shutil.rmtree(save_dir)  # フォルダを削除
+            Download(img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers)
             b.stop()
     else:
-        # ページ数の桁数を決定する
-        std_page_digit = 3
-        page_digit = len(str(num_of_pages))
-        if page_digit > std_page_digit:
-            std_page_digit = page_digit + 1
+        Download(img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers)
 
-        # 画像をダウンロードする
-        for page_cnt, (dl_url, ext) in enumerate(
-            img_info_dict["url_ext_list"].items(), start=1
-        ):
-            page_no = str(page_cnt).zfill(std_page_digit)  # 桁数そろえ
-            file_name = "{}.{}".format(page_no, ext)
-            try:
-                while True:
-                    save_path = os.path.join(save_dir, file_name)  # 保存パスを決定
-                    if os.path.isfile(save_path):  # 同名ファイルが存在する場合はダウンロードをスキップ
-                        print("{}枚目の画像は保存済みなのでスキップします".format(page_cnt))
-                        raise Exception()
-                    # 画像をダウンロード
-                    try:
-                        res = rq.get(dl_url, headers=headers, stream=True, timeout=5)
-                        break
-                    except rq.Timeout:
-                        print("タイムアウトのため{}枚目の画像をスキップします".format(page_cnt))
 
-                # 有効なurlから画像をダウンロード
-                if res.status_code != 200:  # if invalid url
-                    continue
-                file_size = int(res.headers["content-length"])
-                chunk = 1
-                chunk_size = 1024
-                num_bars = int(file_size / chunk_size)
-                progress = "{}/{}枚".format(page_cnt, num_of_pages)
-                with open(save_path, "wb") as f:
-                    for chunk in tqdm(
-                        res.iter_content(chunk_size=chunk_size),
-                        total=num_bars,
-                        unit="KB",
-                        desc=progress,
-                        leave=True,
-                    ):
-                        f.write(chunk)
-            except Exception as e:
-                """
-                if e:
-                    print('=== エラー内容 ===')
-                    print('type:' + str(type(e)))
-                    print('args:' + str(e.args))
-                    print('message:' + e.message)
-                    print('e自身:' + str(e))
-                """
+def Download(img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers):
+    # ページ数の桁数を決定する
+    std_page_digit = 3
+    page_digit = len(str(num_of_pages))
+    if page_digit > std_page_digit:
+        std_page_digit = page_digit + 1
+
+    # 画像をダウンロードする
+    for page_cnt, (dl_url, ext) in enumerate(
+        img_info_dict["url_ext_list"].items(), start=1
+    ):
+        page_no = str(page_cnt).zfill(std_page_digit)  # 桁数そろえ
+        file_name = "{}.{}".format(page_no, ext)
+        try:
+            while True:
+                save_path = os.path.join(save_dir, file_name)  # 保存パスを決定
+                if os.path.isfile(save_path):  # 同名ファイルが存在する場合はダウンロードをスキップ
+                    print("\n{}枚目の画像は保存済みなのでスキップします".format(page_cnt))
+                    raise Exception()
+                # 画像をダウンロード
+                try:
+                    res = rq.get(
+                        dl_url,
+                        headers=headers,
+                        stream=True,
+                        timeout=5
+                    )
+                    break
+                except rq.Timeout:
+                    print("\nタイムアウトのため{}枚目の画像をスキップします".format(page_cnt))
+
+            # 有効なurlから画像をダウンロード
+            if res.status_code != 200:  # if invalid url
                 continue
-        # zipに圧縮
-        print("画像フォルダを圧縮中...")
-        shutil.make_archive(save_dir, "zip", zip_save_dir, title)
-        shutil.rmtree(save_dir)  # フォルダを削除
+            file_size = int(res.headers["content-length"])
+            chunk = 1
+            chunk_size = 1024
+            num_bars = int(file_size / chunk_size)
+            progress = "{}/{}枚".format(page_cnt, num_of_pages)
+            with open(save_path, "wb") as f:
+                for chunk in tqdm(
+                    res.iter_content(chunk_size=chunk_size),
+                    total=num_bars,
+                    unit="KB",
+                    desc=progress,
+                    leave=True,
+                ):
+                    f.write(chunk)
+        except ValueError:
+            print("\nダウンロード中にエラーが発生しています原因を調査してください")
+            """
+        except Exception as e:
+            if e:
+                print('=== エラー内容 ===')
+                print('type:' + str(type(e)))
+                print('args:' + str(e.args))
+                print('message:' + e.message)
+                print('e自身:' + str(e))
+            """
+            continue
+    # zipに圧縮
+    print("\n画像フォルダを圧縮中...")
+    shutil.make_archive(save_dir, "zip", zip_save_dir, title)
+    shutil.rmtree(save_dir)  # フォルダを削除
 
 
 def CheckUrl(url):
@@ -289,7 +246,7 @@ if __name__ == "__main__":
         # ダウンロード再開
         with open(temp_file_name, "rb") as f:
             img_info_dict = pickle.load(f)
-        ImageDownload(img_info_dict, temp_file_name)
+        ImageDownload(img_info_dict)
 
     print("Success! : 画像の取得が完了しました")
     # 処理が終了したら一時ファイルを削除する
