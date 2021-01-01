@@ -7,15 +7,16 @@ verify_ssl = true
 flake8 = "*"
 black = "*"
 mypy = "*"
+pyperclip = "*"
 
 [packages]
-nhentai = "*"
 tqdm = "*"
 youtube-dl = "*"
 beautifulsoup4 = "*"
 requests = "*"
 lxml = "*"
 urllib3 = "*"
+nhentai-api = "==0.0.9"
 
 [requires]
 python_version = "3.7"

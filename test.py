@@ -1,1 +1,4 @@
-print("hello world2")
+import os as test
+import sys
+
+print("os" in sys.modules)
