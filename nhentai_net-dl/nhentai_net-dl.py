@@ -112,7 +112,14 @@ def downloadByPython(img_info_dict):
 
     if "background" in sys.modules:
         with bg.BackgroundTask() as b:
-            Download(img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers)
+            Download(
+                img_info_dict,
+                save_dir,
+                zip_save_dir,
+                title,
+                num_of_pages,
+                headers
+            )
             b.stop()
     else:
         Download(img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers)
@@ -240,7 +247,6 @@ if __name__ == "__main__":
     if not os.path.exists(temp_file_name):
         # 新規のダウンロード開始
         url = GetUrl()
-        url = r"https://nhentai.net/g/342021/"
         CollectImage(url, temp_file_name)
     else:
         # ダウンロード再開
