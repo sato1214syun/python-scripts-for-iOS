@@ -173,8 +173,8 @@ def Download(img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers
                     leave=True,
                 ):
                     f.write(chunk)
-        except ValueError:
-            print("\nダウンロード中にエラーが発生しています原因を調査してください")
+        except Exception as e:
+            # print("\nダウンロード中にエラーが発生しています原因を調査してください")
             """
         except Exception as e:
             if e:
