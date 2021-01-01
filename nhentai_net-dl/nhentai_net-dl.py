@@ -1,24 +1,27 @@
 # !/usr/bin/python
 # -*-coding:utf-8 -*-
 
-import os
-import sys
-import re
-import requests as rq
-import io
 import gzip
+import io
+import os
 import os.path
-from tqdm import tqdm
-import urllib.parse
 import pickle
+import re
+import sys
+import urllib.parse
+
+import requests as rq
+from tqdm import tqdm
+
 try:
     import background as bg
     import pasteboard
 except Exception as e:
     import pyperclip
 
-from NHentai import NHentai
 import shutil
+
+from NHentai import NHentai
 
 
 # HTMLページの取得・タグの抜き出しの処理後、画像収集を行う
@@ -265,12 +268,12 @@ if __name__ == "__main__":
         # 正しい入力が得られるまでループする
         while choiceFlag is False:
             choice = input()  # ユーザの入力を受け付ける
-            Ychoices = ["y", "Y", "yes", "YES", "Yes", "YEs", "yeS", "yES", "YeS"]
-            Nchoices = ["n", "N", "no", "NO", "No", "nO"]
+            Y_choices = ["y", "Y", "yes", "YES", "Yes", "YEs", "yeS", "yES", "YeS"]
+            N_choices = ["n", "N", "no", "NO", "No", "nO"]
 
-            if choice in Ychoices:  # 再開する場合
+            if choice in Y_choices:  # 再開する場合
                 choiceFlag = True  # フラグの切り替え
-            elif choice in Nchoices:  # 再開しない場合
+            elif choice in N_choices:  # 再開しない場合
                 # 一時ファイルを削除する
                 if os.path.exists(temp_file_name):
                     os.remove(temp_file_name)
