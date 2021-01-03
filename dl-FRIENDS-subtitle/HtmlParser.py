@@ -41,13 +41,31 @@ def ParseText(
     speaker: Optional[str] = None
     en_quote: Optional[str] = None
     jp_quote: Optional[str] = None
+    speaker_pattern1 = r"^([ \
+        \u2E80-\u2FDF \
+        \u3005-\u3007 \
+        \u3400-\u4DBF \
+        \u4E00-\u9FFF \
+        \uF900-\uFAFF \
+        \U00020000-\U0002EBEF \
+        ぁ-ゟァ-ヴー・ \
+        ]+):.*$"
+    speaker_pattern2 = r"^([ \
+        \u2E80-\u2FDF \
+        \u3005-\u3007 \
+        \u3400-\u4DBF \
+        \u4E00-\u9FFF \
+        \uF900-\uFAFF \
+        \U00020000-\U0002EBEF \
+        ぁ-ゟァ-ヴー・ \
+        ]+):$"
 
     temp_commentary: str = ""
     for line in text_list:
-        # if is_skip_line_cnt > 0:
-        #     is_skip_line_cnt -= 1
-        #     continue
-
+        # セリフが突然出てきたときに対応
+        if block_type == "commentary" and re.match(speaker_pattern1, line) is not None:
+            block_type = "quotes"
+            speaker = None
         # もしシーズン番号などがあればそのブロックはtitle
         if re.match(r"シーズン\s*[０-９0-9]+\s*第\s*[０-９0-9]+\s*話", line):
             block_type = "title"
@@ -73,13 +91,7 @@ def ParseText(
                 # is_skip_line_cnt = 1  # 次の1行も場面の解説(日本語)なので飛ばす
                 continue
             # 話者の抽出(漢字、ひらがな、カタカナ)
-            if (
-                re.match(
-                    r"^([\u2E80-\u2FDF\u3005-\u3007\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\U00020000-\U0002EBEFぁ-ゟァ-ヴー・]+):$",
-                    line,
-                )
-                is not None
-            ):
+            if re.match(speaker_pattern2, line) is not None:
                 # eng_quoteとjpn_quoteがNoneでない場合(直前にセリフがある場合)はリストに格納
                 if (
                     speaker is not None
@@ -95,8 +107,9 @@ def ParseText(
                 jp_quote = None
                 continue
             # セリフ(英語)の抽出
-            if "<strong>" in line:
+            if "<strong>" in line or "<em>" in line:
                 temp_quote = re.sub(r"</?strong>", "", line)
+                temp_quote = re.sub(r"</?em>", "", temp_quote)
                 if en_quote is None:
                     en_quote = temp_quote
                 else:
