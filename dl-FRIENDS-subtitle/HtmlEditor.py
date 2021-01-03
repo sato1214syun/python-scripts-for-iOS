@@ -127,14 +127,13 @@ def EditArticleHtml(
             new_tag = soup.new_tag("div", attrs={"class": "jp_quote"})
             new_tag.string = jp_quote
             insert_pos_for_each_lng_quotes.append(new_tag)
-        # commentaryを追記
-        new_tag = soup.new_tag("h5")
-        new_tag.string = "Commentary"
+        # commentary用のdetailsを追記
+        new_tag = soup.new_tag("details")
         insert_pos_for_part_no.append(new_tag)
-        # commentary用のblockquoteを追記
-        new_tag = soup.new_tag("blockquote")
-        insert_pos_for_part_no.append(new_tag)
-        insert_pos_for_comm_paragraph = soup.find_all("blockquote")[part_no - 1]
+        insert_pos_for_comm_paragraph = soup.find_all("details")[part_no - 1]
+        new_tag = soup.new_tag("summary")
+        new_tag.string = "Part {} Commentary".format(part_no)
+        insert_pos_for_comm_paragraph.append(new_tag)
         for paragraph in commentary_list[part_no - 1]:
             new_tag = soup.new_tag("p")
             new_tag.string = paragraph
