@@ -107,9 +107,9 @@ def ParseText(
                 jp_quote = None
                 continue
             # セリフ(英語)の抽出
-            if "<strong>" in line or "<em>" in line:
-                temp_quote = re.sub(r"</?strong>", "", line)
-                temp_quote = re.sub(r"</?em>", "", temp_quote)
+            if "<strong>" in line:
+                temp_quote = delete_tag(line)
+                temp_quote = re.sub(r"\n", " ", temp_quote)
                 if en_quote is None:
                     en_quote = temp_quote
                 else:
@@ -148,22 +148,15 @@ def ParseText(
             if line == "区切り":
                 if temp_commentary == "":
                     continue
+                temp_commentary = re.sub(
+                    r"([a-zA-Z0-9\.,])<br/>", r"\1 ", temp_commentary
+                )
                 temp_commentary = delete_tag(temp_commentary)
                 commentary.append(temp_commentary)
                 temp_commentary = ""
                 continue
             else:
-                temp_commentary = re.sub(
-                    r"([a-zA-Z0-9\.,])<br/>", r"\1 ", temp_commentary
-                )
-                temp_commentary = delete_tag(temp_commentary)
-                if (
-                    temp_commentary != ""
-                    and re.match(r"[a-zA-Z0-9\.,]", temp_commentary[-1]) is not None
-                ):
-                    temp_commentary += " {}".format(line)
-                else:
-                    temp_commentary += line
+                temp_commentary += line
                 continue
 
     if eng_title is not None and jpn_title is not None and ori_title_in_jpn is not None:
