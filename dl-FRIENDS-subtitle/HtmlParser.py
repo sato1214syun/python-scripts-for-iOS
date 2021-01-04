@@ -108,12 +108,11 @@ def ParseText(
                 continue
             # セリフ(英語)の抽出
             if "<strong>" in line:
-                temp_quote = delete_tag(line)
-                temp_quote = re.sub(r"\n", " ", temp_quote)
+                temp_quote = delete_tag(re.sub(r"<br/?>", " ", line))
                 if en_quote is None:
                     en_quote = temp_quote
                 else:
-                    en_quote += "\n{}".format(temp_quote)
+                    en_quote += " {}".format(temp_quote)
                 continue
             # brackets(括弧)で囲まれている場合は、日本語のセリフの場合と、英語の場面説明の場合があるので判別
             if re.match(r"^[\(（].+[\)）]$", line) is not None:
@@ -128,7 +127,7 @@ def ParseText(
                     if jp_quote is None:
                         jp_quote = temp_quote
                     else:
-                        jp_quote += "\n{}".format(temp_quote)
+                        jp_quote += " {}".format(temp_quote)
                     continue
             if line == "区切り":
                 # eng_quoteとjpn_quoteがNoneでない場合(直前にセリフがある場合)はリストに格納
