@@ -31,7 +31,7 @@ def ReadWebPage(
 
 if __name__ == "__main__":
     # first_part_url: str = sys.argv[0]
-    first_part_url = r"https://sitcom-friends-eng.seesaa.net/article/388471151.html"
+    first_part_url = r"https://sitcom-friends-eng.seesaa.net/article/388471200.html"
 
     regex_for_url: str = r"(^https?://.+/)\d+\.html"
     match_group = re.match(regex_for_url, first_part_url)
@@ -116,9 +116,13 @@ if __name__ == "__main__":
         episode: str = matched_group_list.group(2)
         part: str = matched_group_list.group(3)
         # ターゲット(初期値)と異なるシーズン＆エピソードの場合は終了
-        if season != target_season or episode != target_episode:
+        if int(season) == int(target_season) + 1 or (
+            int(episode) == int(target_episode) + 1
+        ):
             print("他のエピソードの記事まで到達したので終了します")
             break
+        if season != target_season or episode != target_episode:
+            continue
         # ---ここまで---
 
         # 使用する記事の場合はpickleを保存
