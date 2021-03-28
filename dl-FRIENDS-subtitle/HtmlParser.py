@@ -67,7 +67,7 @@ def ParseText(
             block_type = "quotes"
             speaker = None
         # もしシーズン番号などがあればそのブロックはtitle
-        if re.match(r"シーズン\s*[０-９0-9]+\s*第\s*[０-９0-9]+\s*話", line):
+        if re.match(r"シーズン\s*[０-９0-9贈]+\s*第\s*[０-９0-9]+\s*話", line):
             block_type = "title"
             continue
         if block_type == "title":

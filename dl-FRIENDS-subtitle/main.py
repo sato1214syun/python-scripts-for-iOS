@@ -31,7 +31,7 @@ def ReadWebPage(
 
 if __name__ == "__main__":
     # first_part_url: str = sys.argv[0]
-    first_part_url = r"https://sitcom-friends-eng.seesaa.net/article/388471250.html"
+    first_part_url = r"https://sitcom-friends-eng.seesaa.net/article/388471281.html"
 
     regex_for_url: str = r"(^https?://.+/)\d+\.html"
     match_group = re.match(regex_for_url, first_part_url)
