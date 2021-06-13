@@ -1,5 +1,4 @@
 import os
-import shutil
 import sys
 
 from vtt_to_srt.vtt_to_srt import vtt_to_srt
@@ -11,10 +10,7 @@ file_name = sys.argv[1]
 
 file_path = os.path.join(work_dir, save_dir, file_name)
 vtt_to_srt(file_path)
-new_file_path = file_path.replace(".vvt", ".srt")
-# バックアップファイルの保存
-back_name = new_file_path + ".bak"
-shutil.copy(new_file_path, back_name)
+new_file_path = file_path.replace(".vtt", ".srt")
 
 with open(new_file_path, encoding="utf-8") as f:
     data_list = f.readlines()

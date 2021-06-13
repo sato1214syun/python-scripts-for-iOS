@@ -17,6 +17,7 @@ requests = "*"
 lxml = "*"
 urllib3 = "*"
 nhentai-api = "==0.0.9"
+vtt-to-srt3 = "*"
 
 [pipenv]
 allow_prereleases = true
