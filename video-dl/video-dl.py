@@ -13,7 +13,7 @@ sub_lang = "en"
 ydl_opts = {
     "outtmpl": "{}%(title)s.%(ext)s".format(savePath),
     "format": "mp4",
-    "subtitlesformat": "best",
+    "subtitlesformat": "srt/best",
     "writesubtitles": True,
     "writeautomaticsub": True,
     "subtitleslangs": [sub_lang],
