@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "python-scripts-for-ios"
+version = "0.1.0"
+description = ""
+authors = ["sato1214syun <sato1214syun@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+tqdm = "^4.61.1"
+youtube_dl = "^2021.6.6"
+beautifulsoup4 = "^4.9.3"
+requests = "^2.25.1"
+lxml = "^4.6.3"
+urllib3 = "^1.26.5"
+vtt-to-srt3 = "^0.1.8"
+NHentai-API = "0.0.9"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.9.2"
+mypy = "^0.902"
+black = {version = "^21.6b0", allow-prereleases = true}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

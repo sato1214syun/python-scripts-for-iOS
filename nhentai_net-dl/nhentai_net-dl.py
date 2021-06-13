@@ -113,12 +113,7 @@ def downloadByPython(img_info_dict):
     if "background" in sys.modules:
         with bg.BackgroundTask() as b:
             Download(
-                img_info_dict,
-                save_dir,
-                zip_save_dir,
-                title,
-                num_of_pages,
-                headers
+                img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers
             )
             b.stop()
     else:
@@ -146,12 +141,7 @@ def Download(img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers
                     raise Exception()
                 # 画像をダウンロード
                 try:
-                    res = rq.get(
-                        dl_url,
-                        headers=headers,
-                        stream=True,
-                        timeout=5
-                    )
+                    res = rq.get(dl_url, headers=headers, stream=True, timeout=5)
                     break
                 except rq.Timeout:
                     print("\nタイムアウトのため{}枚目の画像をスキップします".format(page_cnt))
@@ -173,16 +163,16 @@ def Download(img_info_dict, save_dir, zip_save_dir, title, num_of_pages, headers
                     leave=True,
                 ):
                     f.write(chunk)
-        except Exception as e:
+        except Exception:
             # print("\nダウンロード中にエラーが発生しています原因を調査してください")
             """
-        except Exception as e:
-            if e:
-                print('=== エラー内容 ===')
-                print('type:' + str(type(e)))
-                print('args:' + str(e.args))
-                print('message:' + e.message)
-                print('e自身:' + str(e))
+            except Exception as e:
+                if e:
+                    print('=== エラー内容 ===')
+                    print('type:' + str(type(e)))
+                    print('args:' + str(e.args))
+                    print('message:' + e.message)
+                    print('e自身:' + str(e))
             """
             continue
     # zipに圧縮
