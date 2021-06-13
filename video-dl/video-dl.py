@@ -15,8 +15,9 @@ ydl_opts = {
     "format": "mp4",
     "subtitlesformat": "srt/best",
     "writesubtitles": True,
-    "writeautomaticsub": True,
-    "subtitleslangs": [sub_lang],
+    "writeautomaticsub": False,
+    "allsubtitles": True,
+    # "subtitleslangs": [sub_lang],
     "continuedl": True,
 }
 
