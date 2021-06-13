@@ -24,4 +24,4 @@ for data in data_list[1:]:
         cnt += 1
 
 with open(new_file_path, mode="w", encoding="utf-8") as f:
-    data_list = f.writelines(new_data_list)
+    f.writelines(new_data_list)
