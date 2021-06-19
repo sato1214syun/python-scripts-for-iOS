@@ -48,8 +48,10 @@ def ParseText(
         \u4E00-\u9FFF \
         \uF900-\uFAFF \
         \U00020000-\U0002EBEF \
-        ぁ-ゟァ-ヴー・ \
-        ]+):.*$"
+        ぁ-ゟァ-ヴー・、＆ \
+        ]+|女性陣（The Girls）|男性陣（The Boys）| \
+        All|The Girds|The Boys|Phoebe|Monica|Rachel|Ross|Chandler|Joey \
+        ):.*$"
     speaker_pattern2 = r"^([ \
         \u2E80-\u2FDF \
         \u3005-\u3007 \
@@ -57,8 +59,10 @@ def ParseText(
         \u4E00-\u9FFF \
         \uF900-\uFAFF \
         \U00020000-\U0002EBEF \
-        ぁ-ゟァ-ヴー・ \
-        ]+):$"
+        ぁ-ゟァ-ヴー・、＆ \
+        ]+|女性陣（The Girls）|男性陣（The Boys）| \
+        All|The Girds|The Boys|Phoebe|Monica|Rachel|Ross|Chandler|Joey \
+        ):.*$"
 
     temp_commentary: str = ""
     for line in text_list:
