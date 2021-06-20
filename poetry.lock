@@ -297,7 +297,11 @@ python-versions = "*"
 lock-version = "1.1"
 python-versions = "^3.9"
 <<<<<<< HEAD
+<<<<<<< HEAD
 content-hash = "21431dff479bb2a5ebf4e1031ff1cb23899d237b83a618404da0593e0c3f45dd"
+=======
+content-hash = "7d21906f1aed80be5979499142d90f55b79a9009ddaacb0eafbdc5f900239f1e"
+>>>>>>> 8f51063262169b5c28fb823cc1fa54a648ed1ea8
 =======
 content-hash = "7d21906f1aed80be5979499142d90f55b79a9009ddaacb0eafbdc5f900239f1e"
 >>>>>>> 8f51063262169b5c28fb823cc1fa54a648ed1ea8
