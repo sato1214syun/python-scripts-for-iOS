@@ -183,6 +183,17 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
+name = "pysrt"
+version = "1.1.2"
+description = "SubRip (.srt) subtitle parser and writer"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+chardet = "*"
+
+[[package]]
 name = "regex"
 version = "2021.4.4"
 description = "Alternative regular expression module, to replace re."
@@ -277,7 +288,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d1b0b5400b1b235335f8a22fc8652d8a674538ad37b95cd7170aafa236f255ba"
+content-hash = "21431dff479bb2a5ebf4e1031ff1cb23899d237b83a618404da0593e0c3f45dd"
 
 [metadata.files]
 appdirs = [
@@ -413,6 +424,9 @@ pycodestyle = [
 pyflakes = [
     {file = "pyflakes-2.3.1-py2.py3-none-any.whl", hash = "sha256:7893783d01b8a89811dd72d7dfd4d84ff098e5eed95cfa8905b22bbffe52efc3"},
     {file = "pyflakes-2.3.1.tar.gz", hash = "sha256:f5bc8ecabc05bb9d291eb5203d6810b49040f6ff446a756326104746cc00c1db"},
+]
+pysrt = [
+    {file = "pysrt-1.1.2.tar.gz", hash = "sha256:b4f844ba33e4e7743e9db746492f3a193dc0bc112b153914698e7c1cdeb9b0b9"},
 ]
 regex = [
     {file = "regex-2021.4.4-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:619d71c59a78b84d7f18891fe914446d07edd48dc8328c8e149cbe0929b4e000"},
