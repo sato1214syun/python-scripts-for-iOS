@@ -1,10 +1,13 @@
-import pysrt
-from pysrt import SubRipTime, SubRipItem
+import os
 
+import pysrt
+from pysrt import SubRipItem, SubRipTime
 
 limit_time_seconds = 30
-
-subs = pysrt.open("./video-dl/friends_e03s17.srt")
+file_path = "./video-dl/temp_data/friends_e03s17.srt"
+file_name, ext = os.path.splitext(file_path)
+new_file_path = file_name + "_merged" + ext
+subs = pysrt.open(file_path)
 new_subs = pysrt.SubRipFile()
 
 limit = SubRipTime(seconds=30)
@@ -14,10 +17,6 @@ end = None
 cnt = 0
 text = []
 for sub in subs:
-    if cnt == 43:
-        print(sub.end)
-        print(subs[-1].end)
-        print(sub.text)
     if start is None and end is None:
         start = sub.start
         end = sub.end
@@ -40,3 +39,5 @@ for sub in subs:
 
     end = sub.end
     text.append(sub.text)
+
+new_subs.save(new_file_path)
