@@ -249,6 +249,14 @@ notebook = ["ipywidgets (>=6)"]
 telegram = ["requests"]
 
 [[package]]
+name = "types-requests"
+version = "0.1.12"
+description = "Typing stubs for requests"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "3.10.0.0"
 description = "Backported and Experimental Type Hints for Python 3.5+"
@@ -288,7 +296,11 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
+<<<<<<< HEAD
 content-hash = "21431dff479bb2a5ebf4e1031ff1cb23899d237b83a618404da0593e0c3f45dd"
+=======
+content-hash = "7d21906f1aed80be5979499142d90f55b79a9009ddaacb0eafbdc5f900239f1e"
+>>>>>>> 8f51063262169b5c28fb823cc1fa54a648ed1ea8
 
 [metadata.files]
 appdirs = [
@@ -486,6 +498,10 @@ toml = [
 tqdm = [
     {file = "tqdm-4.61.1-py2.py3-none-any.whl", hash = "sha256:aa0c29f03f298951ac6318f7c8ce584e48fa22ec26396e6411e43d038243bdb2"},
     {file = "tqdm-4.61.1.tar.gz", hash = "sha256:24be966933e942be5f074c29755a95b315c69a91f839a29139bf26ffffe2d3fd"},
+]
+types-requests = [
+    {file = "types-requests-0.1.12.tar.gz", hash = "sha256:08323ce2be816c4c107ef605e66369cb26dfda99d278dd502ee32bbf37f9a285"},
+    {file = "types_requests-0.1.12-py2.py3-none-any.whl", hash = "sha256:59b218da05de6eb58e0ab9d096af5e258359365cdf52cf3a1206a8ea87244301"},
 ]
 typing-extensions = [
     {file = "typing_extensions-3.10.0.0-py2-none-any.whl", hash = "sha256:0ac0f89795dd19de6b97debb0c6af1c70987fd80a2d62d1958f7e56fcc31b497"},
