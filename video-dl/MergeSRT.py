@@ -4,12 +4,6 @@ import sys
 import pysrt
 from pysrt import SubRipItem, SubRipTime
 
-try:
-    from FilePickerPyto import FilePickerPyto
-    is_pyto = True
-except Exception:
-    is_pyto = False
-
 
 def MergeSRT(file_path: str) -> None:
     if os.path.splitext(file_path)[1] != ".srt":
@@ -54,11 +48,10 @@ def MergeSRT(file_path: str) -> None:
 
 
 if __name__ == "__main__":
-    if is_pyto:
-        file_path = FilePickerPyto(
-            file_types=["public.data"], allows_multiple_selection=False
-        )[0]
-    else:
-        file_path = input("ファイルパスを入力してください\n>>")
+    from FilePickerPyto import FilePickerPyto
+
+    file_path = FilePickerPyto(
+        file_types=["public.text"], allows_multiple_selection=False
+    )[0]
     MergeSRT(file_path)
     print("srtファイルの変換が完了しました")

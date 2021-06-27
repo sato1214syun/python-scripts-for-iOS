@@ -15,15 +15,11 @@ def ConvertVTT2SRT(file_path) -> str:
 
 
 if __name__ == "__main__":
-    try:
-        from FilePickerPyto import FilePickerPyto
+    from FilePickerPyto import FilePickerPyto
 
-        file_path = FilePickerPyto(
-            file_types=["public.text"], allows_multiple_selection=False
-        )[0]
-    except ImportError:
-        file_path = input("ファイルパスを入力してください\n>>")
-
+    file_path = FilePickerPyto(
+        file_types=["public.text"], allows_multiple_selection=False
+    )[0]
     new_file_path = ConvertVTT2SRT(file_path)
     print("vttファイルをsrtに変換しました")
     MergeSRT(new_file_path)
