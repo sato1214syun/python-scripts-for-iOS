@@ -51,7 +51,7 @@ if __name__ == "__main__":
     from FilePickerPyto import FilePickerPyto
 
     file_path = FilePickerPyto(
-        file_types=["public.text"], allows_multiple_selection=False
+        file_types=["public.data"], allows_multiple_selection=False
     )[0]
     MergeSRT(file_path)
     print("srtファイルの変換が完了しました")
