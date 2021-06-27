@@ -1,11 +1,15 @@
 import sharing
 
+from typing import List
 
 
-def FilePickerPyto():
+
+def FilePickerPyto(
+    file_types: List[str] = ["public.data"], multiple_selection: bool = True
+) -> List[str]:
     filePicker = sharing.FilePicker()
-    filePicker.file_types = ["public.data"]
-    filePicker.allows_multiple_selection = False
+    filePicker.file_types = file
+    filePicker.allows_multiple_selection = multiple_selection
     
     sharing.pick_documents(filePicker)
     file_path_list = sharing.picked_files()

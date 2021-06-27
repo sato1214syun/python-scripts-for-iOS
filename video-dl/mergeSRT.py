@@ -11,7 +11,7 @@ except Exception:
     is_pyto = False
 
 
-def MergeSRT(file_path: str):
+def MergeSRT(file_path: str) -> None:
     print(os.path.splitext(file_path)[1])
     if os.path.splitext(file_path)[1] != ".srt":
         print(file_path)

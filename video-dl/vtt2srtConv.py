@@ -13,7 +13,7 @@ except Exception:
     pass
 
 
-def ConvVTT2SRT(file_path):
+def ConvVTT2SRT(file_path) -> str:
     vtt_to_srt(file_path)
     if os.path.splitext(file_path)[1] != ".vtt":
         input("vttファイルを選択して下さい。エンターを押すと終了します")
