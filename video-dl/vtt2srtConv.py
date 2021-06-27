@@ -39,7 +39,7 @@ def ConvertVTT2SRT(file_path) -> str:
 
 if __name__ == "__main__":
     if is_pyto:
-        file_path = FilePickerPyto()[0]
+        file_path = FilePickerPyto(file_types=["public.text"], multiple_selection=False)[0]
     else:
         file_path = input("ファイルパスを入力してください\n>>")
     new_file_path = ConvertVTT2SRT(file_path)

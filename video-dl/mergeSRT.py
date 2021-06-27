@@ -12,9 +12,7 @@ except Exception:
 
 
 def MergeSRT(file_path: str) -> None:
-    print(os.path.splitext(file_path)[1])
     if os.path.splitext(file_path)[1] != ".srt":
-        print(file_path)
         input("srtファイルを選択してください。エンターを押すと終了します")
         sys.exit()
     limit_time_seconds = 30
@@ -58,7 +56,7 @@ def MergeSRT(file_path: str) -> None:
 
 if __name__ == "__main__":
     if is_pyto:
-        file_path = FilePickerPyto()[0]
+        file_path = FilePickerPyto(file_types=["public.data"], multiple_selection=False)[0]
     else:
         file_path = input("ファイルパスを入力してください\n>>")
     MergeSRT(file_path)
