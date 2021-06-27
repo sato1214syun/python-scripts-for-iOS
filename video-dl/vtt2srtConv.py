@@ -3,14 +3,21 @@ import os
 
 from vtt_to_srt.vtt_to_srt import vtt_to_srt
 from mergeSRT import MergeSRT
-from FilePickerPyto import FilePickerPyto
+
+try:
+    from FilePickerPyto import FilePickerPyto
+
+    is_pyto = True
+except Exception:
+    is_pyto = False
+    pass
 
 
 def ConvVTT2SRT(file_path):
     vtt_to_srt(file_path)
     if os.path.splitext(file_path)[1] != "vtt":
         input("vttファイルを選択して下さい。エンターを押すと終了します")
-        sys.exit() 
+        sys.exit()
     new_file_path = file_path.replace(".vtt", ".srt")
 
     with open(new_file_path, encoding="utf-8") as f:
@@ -26,13 +33,16 @@ def ConvVTT2SRT(file_path):
 
     with open(new_file_path, mode="w", encoding="utf-8") as f:
         f.writelines(new_data_list)
-    
+
     return new_file_path
 
 
 if __name__ == "__main__":
-    file_path_list = FilePickerPyto()
-    new_file_path = ConvVTT2SRT(file_path_list[0])
+    if is_pyto:
+        file_path = FilePickerPyto()[0]
+    else:
+        file_path = input("ファイルパスを入力してください\n>>")
+    new_file_path = ConvVTT2SRT(file_path)
     print("vttファイルをsrtに変換しました")
     MergeSRT(new_file_path)
     print("srtファイルの時間調整が完了しました")
