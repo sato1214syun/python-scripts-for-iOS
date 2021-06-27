@@ -50,13 +50,14 @@ def MergeSRT(file_path: str) -> None:
 
         end = sub.end
         text.append(sub.text)
-
     new_subs.save(new_file_path)
 
 
 if __name__ == "__main__":
     if is_pyto:
-        file_path = FilePickerPyto(file_types=["public.data"], multiple_selection=False)[0]
+        file_path = FilePickerPyto(
+            file_types=["public.data"], allows_multiple_selection=False
+        )[0]
     else:
         file_path = input("ファイルパスを入力してください\n>>")
     MergeSRT(file_path)

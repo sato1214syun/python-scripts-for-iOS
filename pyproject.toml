@@ -12,9 +12,9 @@ beautifulsoup4 = "^4.9.3"
 requests = "^2.25.1"
 lxml = "^4.6.3"
 urllib3 = "^1.26.5"
-vtt-to-srt3 = "^0.1.8"
 NHentai-API = "0.0.9"
 pysrt = "^1.1.2"
+vtt-to-srt3 = "^0.1.8"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"
