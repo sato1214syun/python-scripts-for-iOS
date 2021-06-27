@@ -13,7 +13,7 @@ except Exception:
     pass
 
 
-def ConvVTT2SRT(file_path) -> str:
+def ConvertVTT2SRT(file_path) -> str:
     vtt_to_srt(file_path)
     if os.path.splitext(file_path)[1] != ".vtt":
         input("vttファイルを選択して下さい。エンターを押すと終了します")
@@ -42,7 +42,7 @@ if __name__ == "__main__":
         file_path = FilePickerPyto()[0]
     else:
         file_path = input("ファイルパスを入力してください\n>>")
-    new_file_path = ConvVTT2SRT(file_path)
+    new_file_path = ConvertVTT2SRT(file_path)
     print("vttファイルをsrtに変換しました")
     MergeSRT(new_file_path)
     print("srtファイルの時間調整が完了しました")

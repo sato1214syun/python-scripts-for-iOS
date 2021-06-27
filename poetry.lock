@@ -250,7 +250,7 @@ telegram = ["requests"]
 
 [[package]]
 name = "types-requests"
-version = "0.1.12"
+version = "0.1.13"
 description = "Typing stubs for requests"
 category = "dev"
 optional = false
@@ -266,7 +266,7 @@ python-versions = "*"
 
 [[package]]
 name = "urllib3"
-version = "1.26.5"
+version = "1.26.6"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
@@ -279,7 +279,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "vtt-to-srt3"
-version = "0.1.8.6"
+version = "0.1.8.9"
 description = "vtt to srt subtitles converter package"
 category = "main"
 optional = false
@@ -296,15 +296,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-<<<<<<< HEAD
-<<<<<<< HEAD
-content-hash = "21431dff479bb2a5ebf4e1031ff1cb23899d237b83a618404da0593e0c3f45dd"
-=======
-content-hash = "7d21906f1aed80be5979499142d90f55b79a9009ddaacb0eafbdc5f900239f1e"
->>>>>>> 8f51063262169b5c28fb823cc1fa54a648ed1ea8
-=======
-content-hash = "7d21906f1aed80be5979499142d90f55b79a9009ddaacb0eafbdc5f900239f1e"
->>>>>>> 8f51063262169b5c28fb823cc1fa54a648ed1ea8
+content-hash = "c699a73a156ad291c268306b59ce6aaf583ad8ceb8d855f502e22b8db31f32ff"
 
 [metadata.files]
 appdirs = [
@@ -504,8 +496,8 @@ tqdm = [
     {file = "tqdm-4.61.1.tar.gz", hash = "sha256:24be966933e942be5f074c29755a95b315c69a91f839a29139bf26ffffe2d3fd"},
 ]
 types-requests = [
-    {file = "types-requests-0.1.12.tar.gz", hash = "sha256:08323ce2be816c4c107ef605e66369cb26dfda99d278dd502ee32bbf37f9a285"},
-    {file = "types_requests-0.1.12-py2.py3-none-any.whl", hash = "sha256:59b218da05de6eb58e0ab9d096af5e258359365cdf52cf3a1206a8ea87244301"},
+    {file = "types-requests-0.1.13.tar.gz", hash = "sha256:917d6d0a8d8fe2d084ab6dc28d379ec4e6fa34738e905908680bbfa0ce2d8485"},
+    {file = "types_requests-0.1.13-py3-none-any.whl", hash = "sha256:f7e611082208358045fdeac6edb5d20422ce8cfc935d57dbbef6a6b3a59bfae2"},
 ]
 typing-extensions = [
     {file = "typing_extensions-3.10.0.0-py2-none-any.whl", hash = "sha256:0ac0f89795dd19de6b97debb0c6af1c70987fd80a2d62d1958f7e56fcc31b497"},
@@ -513,11 +505,12 @@ typing-extensions = [
     {file = "typing_extensions-3.10.0.0.tar.gz", hash = "sha256:50b6f157849174217d0656f99dc82fe932884fb250826c18350e159ec6cdf342"},
 ]
 urllib3 = [
-    {file = "urllib3-1.26.5-py2.py3-none-any.whl", hash = "sha256:753a0374df26658f99d826cfe40394a686d05985786d946fbe4165b5148f5a7c"},
-    {file = "urllib3-1.26.5.tar.gz", hash = "sha256:a7acd0977125325f516bda9735fa7142b909a8d01e8b2e4c8108d0984e6e0098"},
+    {file = "urllib3-1.26.6-py2.py3-none-any.whl", hash = "sha256:39fb8672126159acb139a7718dd10806104dec1e2f0f6c88aab05d17df10c8d4"},
+    {file = "urllib3-1.26.6.tar.gz", hash = "sha256:f57b4c16c62fa2760b7e3d97c35b255512fb6b59a259730f36ba32ce9f8e342f"},
 ]
 vtt-to-srt3 = [
-    {file = "vtt_to_srt3-0.1.8.6.tar.gz", hash = "sha256:9d4371fdd0dff881c5ddfa94972f5ce47bfcaff6ea6588262a8109019c25231f"},
+    {file = "vtt_to_srt3-0.1.8.9-py3-none-any.whl", hash = "sha256:d022958cfa3c2e0b382359e96321eccd8ea10ae1e26173b21ac5e8b2e503a6f7"},
+    {file = "vtt_to_srt3-0.1.8.9.tar.gz", hash = "sha256:63fa7f17e5344e1f3b201ddcafa61d1440606cd61a3089437c11cf1edd815448"},
 ]
 youtube-dl = [
     {file = "youtube_dl-2021.6.6-py2.py3-none-any.whl", hash = "sha256:263e04d53fb8ba3dfbd246ad09b7d388e896c132a20cc770c26ee7684de050ac"},
