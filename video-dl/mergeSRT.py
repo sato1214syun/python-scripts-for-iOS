@@ -3,7 +3,7 @@ import sys
 
 import pysrt
 from pysrt import SubRipItem, SubRipTime
-
+from FilePickerPyto import FilePickerPyto
 
 def MergeSRT(file_path: str):
     limit_time_seconds = 30
@@ -46,5 +46,6 @@ def MergeSRT(file_path: str):
 
 
 if __name__ == "__main__":
-    file_path = sys.argv[1]
-    MergeSRT(file_path)
+    file_path_list = FilePickerPyto()
+    MergeSRT(file_path_list[0])
+    print("srtファイルの変換が完了しました")
