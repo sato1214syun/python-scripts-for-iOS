@@ -12,7 +12,8 @@ except Exception:
 
 
 def MergeSRT(file_path: str):
-    if os.path.splitext(file_path)[1] != "srt":
+    print(os.path.splitext(file_path)[1])
+    if os.path.splitext(file_path)[1] != ".srt":
         print(file_path)
         input("srtファイルを選択してください。エンターを押すと終了します")
         sys.exit()

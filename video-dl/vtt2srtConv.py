@@ -15,7 +15,7 @@ except Exception:
 
 def ConvVTT2SRT(file_path):
     vtt_to_srt(file_path)
-    if os.path.splitext(file_path)[1] != "vtt":
+    if os.path.splitext(file_path)[1] != ".vtt":
         input("vttファイルを選択して下さい。エンターを押すと終了します")
         sys.exit()
     new_file_path = file_path.replace(".vtt", ".srt")
