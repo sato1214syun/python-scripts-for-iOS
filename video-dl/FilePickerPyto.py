@@ -15,9 +15,11 @@ def FilePickerPyto(
         sharing.pick_documents(filePicker)
         file_path_list = sharing.picked_files()
     except Exception:
-        from FilePicker import GetFilePathByGUI
-
-        file_path_list = list(GetFilePathByGUI())
+        try:
+            from FilePicker import GetFilePathByGUI
+            file_path_list = list(GetFilePathByGUI())
+        except Exception:
+            file_path_list = [input("ファイルパスを入力して下さい\n>>")]
 
     if len(file_path_list) == 0:
         input("ファイルが選択されませんでした。エンターを押すと終了します")
