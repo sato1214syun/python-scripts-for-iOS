@@ -39,7 +39,7 @@ if __name__ == "__main__":
             "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
         )
         save_dir = "/Video"
-        save_path = f"{work_dir}{save_dir}/"
+        save_path = os.path.join(work_dir, save_dir)
         url = sys.argv[1]
     else:
         save_path = "video-dl\\test_data\\"
