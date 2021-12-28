@@ -1,32 +1,48 @@
-import sys
-import youtube_dl
 import os
-import background as bg
+import platform
+import sys
 
-workDir = "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
-saveDir = "/Video"
-savePath = "{}{}/".format(workDir, saveDir)
+import yt_dlp
 
-url = sys.argv[1]
-sub_lang = "en"
+if "iPhone" in platform.platform() or "iPad" in platform.platform():
+    import background as bg
 
-ydl_opts = {
-    "outtmpl": "{}%(title)s.%(ext)s".format(savePath),
-    "format": "mp4",
-    "subtitlesformat": "srt/best",
-    "writesubtitles": True,
-    "writeautomaticsub": False,
-    "allsubtitles": True,
-    # "subtitleslangs": [sub_lang],
-    "continuedl": True,
-}
 
-os.makedirs(savePath, exist_ok=True)
+def DownloadVideo(save_path, url, subtitle_lang_list):
+    ydl_opts = {
+        "outtmpl": f"{save_path}%(title)s.%(ext)s",
+        "format": "mp4",
+        "writesubtitles": True,
+        "writeautomaticsub": True,
+        "subtitleslangs": subtitle_lang_list,
+        "subtitlesformat": "srt/best",
+        "continuedl": True,
+    }
 
-print("video downloading...")
+    os.makedirs(save_path, exist_ok=True)
 
-with bg.BackgroundTask() as b:
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
+    print("video downloading...")
 
-print("finish")
+    if "iPhone" in platform.platform() or "iPad" in platform.platform():
+        with bg.BackgroundTask():
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+    else:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+    print("finish")
+
+
+if __name__ == "__main__":
+    if "iPhone" in platform.platform() or "iPad" in platform.platform():
+        work_dir = (
+            "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
+        )
+        save_dir = "/Video"
+        save_path = f"{work_dir}{save_dir}/"
+        url = sys.argv[1]
+    else:
+        save_path = "video-dl\\test_data\\"
+        url = "https://www.youtube.com/watch?v=YojicM91ev8"
+    subtitle_lang_list = ["en", "-live_chat"]
+    DownloadVideo(save_path, url, subtitle_lang_list)
