@@ -38,7 +38,7 @@ if __name__ == "__main__":
             "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
         )
         save_dir = "/Video"
-        save_path = os.path.join(work_dir, save_dir)
+        save_path = f"{work_dir}/{save_dir}/"
         input_argv = sys.argv
         if len(input_argv) > 1:
             url = input_argv[1]
@@ -48,6 +48,6 @@ if __name__ == "__main__":
     else:
         save_path = "video-dl\\test_data\\"
         url = "https://www.youtube.com/watch?v=YojicM91ev8"
-        os.makedirs(save_path, exist_ok=True)
+    os.makedirs(save_path, exist_ok=True)
     subtitle_lang_list = ["en", "-live_chat"]
     DownloadVideo(save_path, url, subtitle_lang_list)
