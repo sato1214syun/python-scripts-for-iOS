@@ -43,8 +43,7 @@ if __name__ == "__main__":
         if len(input_argv) > 1:
             url = input_argv[1]
         else:
-            # url = pasteboard.url()
-            url = "https://m.youtube.com/watch?v=5WZcyNksIlI"
+            url = pasteboard.url()
     else:
         save_path = "video-dl\\test_data\\"
         url = "https://www.youtube.com/watch?v=YojicM91ev8"
