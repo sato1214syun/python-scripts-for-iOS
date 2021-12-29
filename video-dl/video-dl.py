@@ -6,6 +6,7 @@ import yt_dlp
 
 if "iPhone" in platform.platform() or "iPad" in platform.platform():
     import background as bg
+    import pasteboard
 
 
 def DownloadVideo(save_path, url, subtitle_lang_list):
@@ -18,8 +19,6 @@ def DownloadVideo(save_path, url, subtitle_lang_list):
         "subtitlesformat": "srt/best",
         "continuedl": True,
     }
-
-    os.makedirs(save_path, exist_ok=True)
 
     print("video downloading...")
 
@@ -40,9 +39,15 @@ if __name__ == "__main__":
         )
         save_dir = "/Video"
         save_path = os.path.join(work_dir, save_dir)
-        url = sys.argv[1]
+        input_argv = sys.argv
+        if len(input_argv) > 1:
+            url = input_argv[1]
+        else:
+            # url = pasteboard.url()
+            url = "https://m.youtube.com/watch?v=5WZcyNksIlI"
     else:
         save_path = "video-dl\\test_data\\"
         url = "https://www.youtube.com/watch?v=YojicM91ev8"
+    os.makedirs(save_path, exist_ok=True)
     subtitle_lang_list = ["en", "-live_chat"]
     DownloadVideo(save_path, url, subtitle_lang_list)
