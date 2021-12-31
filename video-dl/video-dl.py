@@ -4,10 +4,6 @@ import sys
 
 import yt_dlp
 
-if "iPhone" in platform.platform() or "iPad" in platform.platform():
-    import background as bg
-    import pasteboard
-
 
 def DownloadVideo(save_path, url, subtitle_lang_list):
     ydl_opts = {
@@ -18,11 +14,12 @@ def DownloadVideo(save_path, url, subtitle_lang_list):
         "subtitleslangs": subtitle_lang_list,
         "subtitlesformat": "srt/best",
         "continuedl": True,
+        "ignoreerrors": True,
     }
 
     print("video downloading...")
 
-    if "iPhone" in platform.platform() or "iPad" in platform.platform():
+    if is_iOS:
         with bg.BackgroundTask():
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
@@ -33,7 +30,16 @@ def DownloadVideo(save_path, url, subtitle_lang_list):
 
 
 if __name__ == "__main__":
+    # iOSで動いているかの判定
+    is_iOS = False
     if "iPhone" in platform.platform() or "iPad" in platform.platform():
+        is_iOS = True
+        import background as bg
+        import pasteboard
+    else:
+        import pyperclip
+
+    if is_iOS:
         work_dir = (
             "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
         )
@@ -46,7 +52,8 @@ if __name__ == "__main__":
             url = pasteboard.url()
     else:
         save_path = "video-dl\\test_data\\"
-        url = "https://www.youtube.com/watch?v=YojicM91ev8"
+        # url = "https://abcnews.go.com/US/video/ghislaine-maxwell-found-guilty-charges-81994466"
+        url = pyperclip.paste()
     os.makedirs(save_path, exist_ok=True)
     subtitle_lang_list = ["en", "-live_chat"]
     DownloadVideo(save_path, url, subtitle_lang_list)

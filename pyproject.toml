@@ -15,6 +15,7 @@ NHentai-API = "0.0.9"
 pysrt = "^1.1.2"
 vtt-to-srt3 = "^0.1.8"
 yt-dlp = "^2021.12.27"
+pyperclip = "^1.8.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"

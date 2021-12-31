@@ -9,7 +9,7 @@ def MergeSRT(file_path: str) -> None:
     if os.path.splitext(file_path)[1] != ".srt":
         input("srtファイルを選択してください。エンターを押すと終了します")
         sys.exit()
-    limit_time_seconds = 70
+    limit_time_seconds = 130
     file_name, ext = os.path.splitext(file_path)
     new_file_path = file_name + "_merged" + ext
     subs = pysrt.open(file_path)
