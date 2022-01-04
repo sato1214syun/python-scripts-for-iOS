@@ -14,7 +14,7 @@ def ConvertTTML2TXT(file_path) -> str:
     for row in txt_list:
         if row[:9] == "<p begin=":
             part_of_sentence = re.sub("<.+?>", "", row).strip()
-            if re.match(r"[A-Z]+ ?[A-Z]*: ", part_of_sentence):
+            if re.match(r"^[A-Z]+ ?[A-Z .]*: ", part_of_sentence):
                 part_of_sentence = "\n" + part_of_sentence
             if part_of_sentence[-1:] in [".", "]", "?", "!"]:
                 one_sentence += part_of_sentence
