@@ -1,7 +1,7 @@
 import os
-import sys
-import re
 import platform
+import re
+import sys
 
 
 def ConvertTTML2TXT(file_path) -> str:

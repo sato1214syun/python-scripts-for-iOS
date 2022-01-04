@@ -1,4 +1,5 @@
 import os
+import platform
 import sys
 
 from vtt_to_srt.vtt_to_srt import vtt_to_srt
@@ -13,11 +14,20 @@ def ConvertVTT2SRT(file_path: str) -> str:
 
 
 if __name__ == "__main__":
-    from FilePickerPyto import FilePickerPyto
+    # iOSで動いているかの判定
+    is_iOS = False
+    if "iPhone" in platform.platform() or "iPad" in platform.platform():
+        is_iOS = True
+        from FilePickerPyto import FilePickerPyto
+        file_path = FilePickerPyto(
+            file_types=["public.text"], allows_multiple_selection=False
+        )[0]
+    else:
+        from FilePicker import GetFilePathByGUI
+        file_path = GetFilePathByGUI(
+            file_type=(["VTTファイル", "*.vtt"],),
+        )[0]
 
-    file_path = FilePickerPyto(
-        file_types=["public.text"], allows_multiple_selection=False
-    )[0]
     sub_base_name, sub_ext = os.path.splitext(file_path)
     new_file_path = ""
     if sub_ext == ".vtt":
