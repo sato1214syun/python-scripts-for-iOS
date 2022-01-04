@@ -36,7 +36,7 @@ if __name__ == "__main__":
         is_iOS = True
         from FilePickerPyto import FilePickerPyto
         file_path = FilePickerPyto(
-            file_types=["public.data"], allows_multiple_selection=False
+            file_types=["public.all"], allows_multiple_selection=False
         )[0]
     else:
         from FilePicker import GetFilePathByGUI
