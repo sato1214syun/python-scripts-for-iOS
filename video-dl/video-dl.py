@@ -10,7 +10,7 @@ def DownloadVideo(save_path, url, subtitle_lang_list):
         "outtmpl": f"{save_path}%(title)s.%(ext)s",
         "format": "mp4",
         "writesubtitles": True,
-        "writeautomaticsub": True,
+        "writeautomaticsub": False,
         "subtitleslangs": subtitle_lang_list,
         "subtitlesformat": "srt/best",
         "continuedl": True,
