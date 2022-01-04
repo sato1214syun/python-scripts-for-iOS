@@ -6,7 +6,7 @@ from typing import List, Literal, Tuple, Union
 
 def GetFilePathByGUI(
     file_type=(["すべてのファイル", "*"],),
-    initial_dir=os.path.dirname(__file__),
+    initial_dir="",
 ) -> Union[Tuple[str, ...], Literal['']]:
     # ファイル選択ダイアログの表示
     root = tkinter.Tk()
@@ -25,7 +25,7 @@ def GetFilePathByGUI(
 
 
 def GetDirPathByGUI(
-    initial_dir=os.path.dirname(__file__),
+    initial_dir="",
 ) -> Tuple[str, List[str]]:
     # ファイル選択ダイアログの表示
     root = tkinter.Tk()

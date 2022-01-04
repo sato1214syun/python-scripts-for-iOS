@@ -1,10 +1,11 @@
 import os
 import sys
 import re
+import platform
 
 
 def ConvertTTML2TXT(file_path) -> str:
-    save_file_path = file_path.replace(".ttml", ".srt")
+    save_file_path = file_path.replace(".ttml", ".txt")
     with open(file_path, mode="r") as f:
         txt_list = f.readlines()
 
@@ -29,11 +30,20 @@ def ConvertTTML2TXT(file_path) -> str:
 
 
 if __name__ == "__main__":
-    from FilePickerPyto import FilePickerPyto
+    # iOSで動いているかの判定
+    is_iOS = False
+    if "iPhone" in platform.platform() or "iPad" in platform.platform():
+        is_iOS = True
+        from FilePickerPyto import FilePickerPyto
+        file_path = FilePickerPyto(
+            file_types=["public.text"], allows_multiple_selection=False
+        )[0]
+    else:
+        from FilePicker import GetFilePathByGUI
+        file_path = GetFilePathByGUI(
+            file_type=(["TTMLファイル", "*.ttml"],),
+        )[0]
 
-    file_path = FilePickerPyto(
-        file_types=["public.text"], allows_multiple_selection=False
-    )[0]
     sub_base_name, sub_ext = os.path.splitext(file_path)
     new_file_path = ""
     if sub_ext == ".ttml":
