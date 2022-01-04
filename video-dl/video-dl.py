@@ -52,7 +52,6 @@ if __name__ == "__main__":
             url = pasteboard.url()
     else:
         save_path = "video-dl\\test_data\\"
-        # url = "https://abcnews.go.com/US/video/ghislaine-maxwell-found-guilty-charges-81994466"
         url = pyperclip.paste()
     os.makedirs(save_path, exist_ok=True)
     subtitle_lang_list = ["en", "-live_chat"]
