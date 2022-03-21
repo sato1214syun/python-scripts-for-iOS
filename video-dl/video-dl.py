@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import os
+from pathlib import Path
 import platform
 import re
 import sys
@@ -63,19 +63,22 @@ if __name__ == "__main__":
         import pyperclip
 
     if is_iOS:
-        WORK_DIR = (
+        WORK_DIR = Path(
             "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
         )
-        DIR_NAME = "/Video"
-        SAVE_DIR_PATH = f"{WORK_DIR}{DIR_NAME}/"
+        DIR_NAME = "Video"
+        SAVE_DIR_PATH = WORK_DIR / DIR_NAME
         input_argv = sys.argv
         if len(input_argv) > 1:
             url = input_argv[1]
         else:
             url = pasteboard.url()
     else:
-        SAVE_DIR_PATH = "video-dl\\test_data\\"
-        url = pyperclip.paste()
+        SAVE_DIR_PATH = Path("./video-dl/download")
+        try:
+            url = pyperclip.paste()
+        except pyperclip.PyperclipException as e:
+            url = input("urlを入力してください:")
 
     parsed_url = urlparse(url)
     if parsed_url.netloc == "www.goodmorningamerica.com":
@@ -83,8 +86,14 @@ if __name__ == "__main__":
         parsed_url = urlparse(url)
 
     # クリップボードにurlを格納
-    ... if is_iOS else pyperclip.copy(url)
-    os.makedirs(SAVE_DIR_PATH, exist_ok=True)
+    if is_iOS:
+        pass
+    else:
+        try:
+            pyperclip.copy(url)
+        except pyperclip.PyperclipException as e:
+            pass
+    SAVE_DIR_PATH.mkdir(parents=True, exist_ok=True)
 
     ydl_opts: dict[str, str | bool | list[str]]
     # ダウンロードできる字幕を確認
@@ -104,7 +113,7 @@ if __name__ == "__main__":
     print("Downloading video...")
     write_auto_sub = True if parsed_url.netloc in GET_AUTO_SUB_LIST else False
     ydl_opts = {
-        "outtmpl": f"{SAVE_DIR_PATH}%(title)s.%(ext)s",
+        "outtmpl": f"{str(SAVE_DIR_PATH)}/%(title)s.%(ext)s",
         "format": "mp4",
         "writesubtitles": True,
         "writeautomaticsub": write_auto_sub,
