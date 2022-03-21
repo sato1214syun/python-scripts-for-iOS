@@ -117,7 +117,7 @@ if __name__ == "__main__":
         "format": "mp4",
         "writesubtitles": True,
         "writeautomaticsub": write_auto_sub,
-        "subtitleslangs": ["en", "-live_chat"],
+        "subtitleslangs": ["en.*", "-live_chat"],
         "subtitlesformat": "srt/best",
         "continuedl": True,
         "ignoreerrors": True,
