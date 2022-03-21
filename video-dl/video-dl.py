@@ -33,7 +33,7 @@ NEGATIVE_ANSWERS = [
 
 
 def DownloadVideo(
-    ydl_opts: dict[str, str | bool | list[str]],
+    ydl_opts: dict[str, str | bool | list[str] | list[dict]],
     is_iOS: bool = False,
 ) -> None:
     if is_iOS:
@@ -77,7 +77,7 @@ if __name__ == "__main__":
         SAVE_DIR_PATH = Path("./video-dl/download")
         try:
             url = pyperclip.paste()
-        except pyperclip.PyperclipException as e:
+        except pyperclip.PyperclipException:
             url = input("urlを入力してください:")
 
     parsed_url = urlparse(url)
@@ -91,11 +91,11 @@ if __name__ == "__main__":
     else:
         try:
             pyperclip.copy(url)
-        except pyperclip.PyperclipException as e:
+        except pyperclip.PyperclipException:
             pass
     SAVE_DIR_PATH.mkdir(parents=True, exist_ok=True)
 
-    ydl_opts: dict[str, str | bool | list[str]]
+    ydl_opts: dict[str, str | bool | list[str] | list[dict]]
     # ダウンロードできる字幕を確認
     print("Investigating available subtitles...")
     ydl_opts = {"listsubtitles": True}
@@ -115,6 +115,13 @@ if __name__ == "__main__":
     ydl_opts = {
         "outtmpl": f"{str(SAVE_DIR_PATH)}/%(title)s.%(ext)s",
         "format": "mp4",
+        "postprocessors": [
+            {
+                "key": "FFmpegSubtitlesConvertor",
+                "format": "srt",
+                "when": "before_dl",
+            },
+        ],
         "writesubtitles": True,
         "writeautomaticsub": write_auto_sub,
         "subtitleslangs": ["en.*", "-live_chat"],
