@@ -128,6 +128,7 @@ if __name__ == "__main__":
         "subtitlesformat": "srt/best",
         "continuedl": True,
         "ignoreerrors": True,
+        "keepvideo": True,
     }
     DownloadVideo(ydl_opts, is_iOS=is_iOS)
     print("finish")
