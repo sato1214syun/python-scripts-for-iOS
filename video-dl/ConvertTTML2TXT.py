@@ -1,12 +1,13 @@
-import os
 import platform
 import re
 import sys
+from pathlib import Path
 
 
 def ConvertTTML2TXT(file_path) -> str:
-    save_file_path = file_path.replace(".ttml", ".txt")
-    with open(file_path, mode="r") as f:
+    file_path_str = str(file_path) if isinstance(file_path, Path) else file_path
+    save_file_path = str(file_path_str).replace(".ttml", ".txt")
+    with open(file_path_str, mode="r") as f:
         txt_list = f.readlines()
 
     one_sentence = ""
@@ -35,23 +36,31 @@ if __name__ == "__main__":
     if "iPhone" in platform.platform() or "iPad" in platform.platform():
         is_iOS = True
         from FilePickerPyto import FilePickerPyto
-        file_path = FilePickerPyto(
-            file_types=["public.all"], allows_multiple_selection=False
-        )[0]
-    else:
-        from FilePicker import GetFilePathByGUI
-        file_path = GetFilePathByGUI(
-            file_type=(["TTMLファイル", "*.ttml"],),
-        )[0]
 
-    sub_base_name, sub_ext = os.path.splitext(file_path)
+        file_path = Path(
+            FilePickerPyto(file_types=["public.all"], allows_multiple_selection=False)[
+                0
+            ]
+        )
+    else:
+        try:
+            from FilePicker import GetFilePathByGUI
+
+            file_path = Path(
+                GetFilePathByGUI(
+                    file_type=(["TTMLファイル", "*.ttml"],),
+                )[0]
+            )
+        except ModuleNotFoundError:
+            path_str = input("\n変換する字幕のパスを入力してください:")
+            file_path = Path(path_str)
+
+    sub_base_name, sub_ext = file_path.stem, file_path.suffix
     new_file_path = ""
     if sub_ext == ".ttml":
         new_file_path = ConvertTTML2TXT(file_path)
     else:
-        input(
-            "以下の字幕フォーマットのみ対応しています。\n"
-            "・TTML(ABC newsなど)\n"
-            "エンターを押すと終了します。"
-        )
+        input("以下の字幕フォーマットのみ対応しています。\n" "・TTML(ABC newsなど)\n" "エンターを押すと終了します。")
         sys.exit()
+
+    print("\nttmlをテキストに変換しました")
