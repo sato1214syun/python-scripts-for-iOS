@@ -84,7 +84,7 @@ if __name__ == "__main__":
     if parsed_url.netloc == "www.goodmorningamerica.com":
         url = URLConversionForGMA(url)
         parsed_url = urlparse(url)
-
+    print(f"\nAttempting to download from {url}\n")
     # クリップボードにurlを格納
     if is_iOS:
         pass
