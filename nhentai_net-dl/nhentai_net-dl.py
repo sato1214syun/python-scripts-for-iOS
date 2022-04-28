@@ -51,7 +51,7 @@ def GetMediaData(url):
     # mediaDataを取得
     print("情報を読み込み中です。。。")
     nhentai = NHentai()
-    media_info_dict: dict = nhentai._get_doujin(id=id)
+    media_info_dict: dict = nhentai.get_doujin(id=id)
     return media_info_dict
 
 
@@ -75,17 +75,17 @@ def htmlDownload(url):
 def GetImageInfo(media_info_dict):
     print("画像urlを取得中...")
     img_info_dict = {}
-    if media_info_dict["secondary_title"] != "":
-        img_info_dict["title"] = media_info_dict["secondary_title"].replace("/", "_")
+    if jp_title := media_info_dict.title.japanese:
+        img_info_dict["title"] = jp_title.replace("/", "_")
     else:
-        img_info_dict["title"] = media_info_dict["title"].replace("/", "_")
+        img_info_dict["title"] = media_info_dict.title.english.replace("/", "_")
 
-    img_info_dict["num_of_pages"] = int(media_info_dict["pages"][0])
-    img_url_list = media_info_dict["images"]
-    file_ext_list = [img_url.split(".")[-1] for img_url in img_url_list]
+    img_info_dict["num_of_pages"] = media_info_dict.total_pages
+    img_info_list = media_info_dict.images
+    file_ext_list = [img_info.mime for img_info in img_info_list]
 
     img_info_dict["url_ext_list"] = {
-        url: ext for url, ext in zip(img_url_list, file_ext_list)
+        img_info.src: ext for img_info, ext in zip(img_info_list, file_ext_list)
     }
 
     return img_info_dict
