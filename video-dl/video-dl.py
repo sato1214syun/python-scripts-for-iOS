@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-import platform
+from platform import platform
 import re
 import sys
 from urllib.parse import urlparse
@@ -55,12 +55,13 @@ def URLConversionForGMA(url):
 if __name__ == "__main__":
     # iOSで動いているかの判定
     is_iOS = False
-    if "iPhone" in platform.platform() or "iPad" in platform.platform():
+    if "iPhone" in platform() or "iPad" in platform():
         is_iOS = True
         import background as bg
         import pasteboard
     else:
         import pyperclip
+        from pyperclip import PyperclipException
 
     if is_iOS:
         WORK_DIR = Path(
@@ -77,7 +78,7 @@ if __name__ == "__main__":
         SAVE_DIR_PATH = Path("./video-dl/download")
         try:
             url = pyperclip.paste()
-        except pyperclip.PyperclipException:
+        except PyperclipException:
             url = input("urlを入力してください:")
 
     parsed_url = urlparse(url)

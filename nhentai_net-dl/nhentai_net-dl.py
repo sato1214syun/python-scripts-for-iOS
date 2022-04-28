@@ -6,24 +6,15 @@ import io
 import os
 import os.path
 import pickle
+from platform import platform
 import re
+import shutil
 import sys
 import urllib.parse
 
 import requests as rq
-from tqdm import tqdm
-
-try:
-    import background as bg
-    import pasteboard
-except ImportError:
-    print("\nbackgroundとpasteboardをインポートできませんでした。iOSアプリのpyto以外で実行している可能性があります")
-    import pyperclip
-
-import shutil
-
-
 from NHentai import NHentai
+from tqdm import tqdm
 
 
 # HTMLページの取得・タグの抜き出しの処理後、画像収集を行う
@@ -188,24 +179,31 @@ def CheckUrl(url):
     return url
 
 
-def GetUrl():
-    try:
-        url = CheckUrl(sys.argv[1])
-        if not url:
-            if "pasteboard" in sys.modules:
-                url = CheckUrl(pasteboard.url())
-            else:
-                url = CheckUrl(pyperclip.paste())
-    except IndexError:
-        if "pasteboard" in sys.modules:
-            url = CheckUrl(pasteboard.url())
+def GetUrl(is_iOS: bool):
+    if is_iOS:
+        if len(sys.argv) > 1:
+            url = sys.argv[1]
         else:
-            url = CheckUrl(pyperclip.paste())
-    return url
+            url = pasteboard.url()
+    else:
+        try:
+            url = pyperclip.paste()
+        except PyperclipException:
+            url = input("urlを入力してください:")
+    return CheckUrl(url)
 
 
 # main関数
 if __name__ == "__main__":
+    # iOSで動いているかの判定
+    is_iOS = False
+    if "iPhone" in platform() or "iPad" in platform():
+        is_iOS = True
+        import background as bg
+        import pasteboard
+    else:
+        import pyperclip
+        from pyperclip import PyperclipException
 
     temp_file_name = "nhentai.pickle"
     # 画像ファイルの命名モード
@@ -236,7 +234,7 @@ if __name__ == "__main__":
                 print("入力が正しくありません。")
     if not os.path.exists(temp_file_name):
         # 新規のダウンロード開始
-        url = GetUrl()
+        url = GetUrl(is_iOS)
         CollectImage(url, temp_file_name)
     else:
         # ダウンロード再開
