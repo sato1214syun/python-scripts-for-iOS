@@ -55,10 +55,16 @@ def URLConversionForGMA(url):
 if __name__ == "__main__":
     # iOSで動いているかの判定
     is_iOS = False
+    is_pyto = False
     if "iPhone" in platform() or "iPad" in platform():
         is_iOS = True
-        import background as bg
-        import pasteboard
+        try:
+            import background as bg
+            import pasteboard
+            is_pyto = True
+        except ImportError:
+            import pyperclip
+            from pyperclip import PyperclipException
     else:
         import pyperclip
         from pyperclip import PyperclipException
@@ -69,31 +75,35 @@ if __name__ == "__main__":
         )
         DIR_NAME = "Video"
         SAVE_DIR_PATH = WORK_DIR / DIR_NAME
+    else:
+        SAVE_DIR_PATH = Path("./video-dl/download")
+
+    url = ""
+    if is_pyto:
         input_argv = sys.argv
         if len(input_argv) > 1:
             url = input_argv[1]
         else:
             url = pasteboard.url()
-    else:
-        SAVE_DIR_PATH = Path("./video-dl/download")
+
+    parsed_url = urlparse(url)
+    if len(parsed_url.scheme) < 1:
         try:
             url = pyperclip.paste()
         except PyperclipException:
             url = input("urlを入力してください:")
 
     parsed_url = urlparse(url)
+    if len(parsed_url.scheme) < 1:
+        print("urlが正しくないため終了します")
+        sys.exit()
+
     if parsed_url.netloc == "www.goodmorningamerica.com":
         url = URLConversionForGMA(url)
         parsed_url = urlparse(url)
-    print(f"\nAttempting to download from {url}\n")
-    # クリップボードにurlを格納
-    if is_iOS:
-        pass
-    else:
-        try:
-            pyperclip.copy(url)
-        except pyperclip.PyperclipException:
-            pass
+    print(f"\nTrying to download from {url}\n")
+
+    # 保存ディレクトリを作成
     SAVE_DIR_PATH.mkdir(parents=True, exist_ok=True)
 
     ydl_opts: dict[str, str | bool | list[str] | list[dict]]
