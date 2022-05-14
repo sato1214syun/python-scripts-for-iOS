@@ -1,8 +1,3 @@
-# !/usr/bin/python
-# -*-coding:utf-8 -*-
-
-import gzip
-import io
 import os
 import os.path
 import pickle
@@ -14,65 +9,46 @@ import urllib.parse
 
 import requests as rq
 from NHentai import NHentai
+from NHentai.entities.doujin import Doujin
 from tqdm import tqdm
 
 
 # HTMLページの取得・タグの抜き出しの処理後、画像収集を行う
-def CollectImage(url, temp_file_name):
+def CollectImage(url):
 
     print("画像ダウンロードを開始します...")  # ダウンロード処理開始のメッセージ
     # extract mediaData
-    media_info_dict = GetMediaData(url)
-    img_info_dict = GetImageInfo(media_info_dict)  # get img data
-    ImageDownload(img_info_dict)
+    doujin_info = GetMediaData(url)
+    img_info_dict = GetImageInfo(doujin_info)  # get img data
+    downloadByPython(img_info_dict)
     return
 
 
-def GetMediaData(url):
+def GetMediaData(url) -> Doujin:
     # extract gURL
     regex_pat = re.compile(r"https?://nhentai.net/g/([0-9]+)/*[0-9]*")
-    print(url)
-    try:
-        id = regex_pat.match(url).group(1)
-        if not id:
-            sys.exit("Error! : Not a nhentai.net url")
-    except AttributeError:
+    if (match := regex_pat.match(url)) is not None:
+        id: str = match.group(1)
+    else:
         sys.exit("Error! : Not a nhentai.net url")
 
     # mediaDataを取得
     print("情報を読み込み中です。。。")
     nhentai = NHentai()
-    media_info_dict: dict = nhentai.get_doujin(id=id)
-    return media_info_dict
+    doujin_info = nhentai.get_doujin(id=id)
+    return doujin_info
 
 
-def htmlDownload(url):
-    try:
-        headers = {"User-Agent": "Magic Browser", "Accept-encoding": "gzip"}
-        res = rq.get(url, headers=headers)
-        html = res.text
-        # body部分がgzip化されている場合の処理
-        if res.encoding == "gzip":
-            data = io.StringIO(html)
-            gzipper = gzip.GzipFile(fileobj=data)
-            html = gzipper.read()
-    except rq.exceptions.RequestException as e:
-        print(e)
-        sys.exit()
-
-    return html
-
-
-def GetImageInfo(media_info_dict):
+def GetImageInfo(doujin_info: Doujin):
     print("画像urlを取得中...")
     img_info_dict = {}
-    if jp_title := media_info_dict.title.japanese:
+    if jp_title := doujin_info.title.japanese:
         img_info_dict["title"] = jp_title.replace("/", "_")
     else:
-        img_info_dict["title"] = media_info_dict.title.english.replace("/", "_")
+        img_info_dict["title"] = doujin_info.title.english.replace("/", "_")
 
-    img_info_dict["num_of_pages"] = media_info_dict.total_pages
-    img_info_list = media_info_dict.images
+    img_info_dict["num_of_pages"] = doujin_info.total_pages
+    img_info_list = doujin_info.images
     file_ext_list = [img_info.mime for img_info in img_info_list]
 
     img_info_dict["url_ext_list"] = {
@@ -80,10 +56,6 @@ def GetImageInfo(media_info_dict):
     }
 
     return img_info_dict
-
-
-def ImageDownload(img_info_dict):
-    downloadByPython(img_info_dict)
 
 
 def downloadByPython(img_info_dict):
@@ -179,17 +151,22 @@ def CheckUrl(url):
     return url
 
 
-def GetUrl(is_iOS: bool):
-    if is_iOS:
-        if len(sys.argv) > 1:
-            url = sys.argv[1]
+def GetUrl(is_pyto: bool):
+    url = ""
+    if is_pyto:
+        input_argv = sys.argv
+        if len(input_argv) > 1:
+            url = input_argv[1]
         else:
             url = pasteboard.url()
-    else:
+
+    if not CheckUrl(url):
         try:
             url = pyperclip.paste()
         except PyperclipException:
             url = input("urlを入力してください:")
+    if not CheckUrl(url):
+        url = input("urlを入力してください:")
     return CheckUrl(url)
 
 
@@ -197,10 +174,16 @@ def GetUrl(is_iOS: bool):
 if __name__ == "__main__":
     # iOSで動いているかの判定
     is_iOS = False
+    is_pyto = False
     if "iPhone" in platform() or "iPad" in platform():
         is_iOS = True
-        import background as bg
-        import pasteboard
+        try:
+            import background as bg
+            import pasteboard
+            is_pyto = True
+        except ImportError:
+            import pyperclip
+            from pyperclip import PyperclipException
     else:
         import pyperclip
         from pyperclip import PyperclipException
@@ -234,13 +217,13 @@ if __name__ == "__main__":
                 print("入力が正しくありません。")
     if not os.path.exists(temp_file_name):
         # 新規のダウンロード開始
-        url = GetUrl(is_iOS)
-        CollectImage(url, temp_file_name)
+        url = GetUrl(is_pyto)
+        CollectImage(url)
     else:
         # ダウンロード再開
         with open(temp_file_name, "rb") as f:
             img_info_dict = pickle.load(f)
-        ImageDownload(img_info_dict)
+        downloadByPython(img_info_dict)
 
     print("Success! : 画像の取得が完了しました")
     # 処理が終了したら一時ファイルを削除する
