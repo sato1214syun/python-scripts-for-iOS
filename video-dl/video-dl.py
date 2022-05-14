@@ -34,9 +34,9 @@ NEGATIVE_ANSWERS = [
 
 def DownloadVideo(
     ydl_opts: dict[str, str | bool | list[str] | list[dict]],
-    is_iOS: bool = False,
+    is_pyto: bool = False,
 ) -> None:
-    if is_iOS:
+    if is_pyto:
         with bg.BackgroundTask():
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
@@ -141,5 +141,5 @@ if __name__ == "__main__":
         "ignoreerrors": True,
         "keepvideo": True,
     }
-    DownloadVideo(ydl_opts, is_iOS=is_iOS)
+    DownloadVideo(ydl_opts, is_pyto=is_pyto)
     print("finish")
