@@ -94,6 +94,7 @@ if __name__ == "__main__":
             url = input("urlを入力してください:")
 
     parsed_url = urlparse(url)
+    print(f"{url}\nからダウンロードします。")
     if len(parsed_url.scheme) < 1:
         print("urlが正しくないため終了します")
         sys.exit()
