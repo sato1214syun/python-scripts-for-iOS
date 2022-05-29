@@ -87,11 +87,11 @@ cffi = ">=1.0.0"
 
 [[package]]
 name = "certifi"
-version = "2021.10.8"
+version = "2022.5.18.1"
 description = "Python package for providing Mozilla's CA Bundle."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [[package]]
 name = "cffi"
@@ -332,7 +332,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "vtt-to-srt3"
-version = "0.1.9.0"
+version = "0.1.9.1"
 description = "vtt to srt subtitles converter package"
 category = "main"
 optional = false
@@ -360,7 +360,7 @@ multidict = ">=4.0"
 
 [[package]]
 name = "yt-dlp"
-version = "2022.4.8"
+version = "2022.5.18"
 description = "A youtube-dl fork with additional features and patches"
 category = "main"
 optional = false
@@ -567,8 +567,8 @@ brotlicffi = [
     {file = "brotlicffi-1.0.9.2.tar.gz", hash = "sha256:0c248a68129d8fc6a217767406c731e498c3e19a7be05ea0a90c3c86637b7d96"},
 ]
 certifi = [
-    {file = "certifi-2021.10.8-py2.py3-none-any.whl", hash = "sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569"},
-    {file = "certifi-2021.10.8.tar.gz", hash = "sha256:78884e7c1d4b00ce3cea67b44566851c4343c120abd683433ce934a68ea58872"},
+    {file = "certifi-2022.5.18.1-py3-none-any.whl", hash = "sha256:f1d53542ee8cbedbe2118b5686372fb33c297fcd6379b050cca0ef13a597382a"},
+    {file = "certifi-2022.5.18.1.tar.gz", hash = "sha256:9c5705e395cd70084351dd8ad5c41e65655e08ce46f2ec9cf6c2c08390f71eb7"},
 ]
 cffi = [
     {file = "cffi-1.15.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:c2502a1a03b6312837279c8c1bd3ebedf6c12c4228ddbad40912d671ccc8a962"},
@@ -905,8 +905,8 @@ urllib3 = [
     {file = "urllib3-1.26.9.tar.gz", hash = "sha256:aabaf16477806a5e1dd19aa41f8c2b7950dd3c746362d7e3223dbe6de6ac448e"},
 ]
 vtt-to-srt3 = [
-    {file = "vtt_to_srt3-0.1.9.0-py3-none-any.whl", hash = "sha256:6807e83640a4fc9dafffa1e29b32e53a9100f58b51590a0e6065b27a34298dae"},
-    {file = "vtt_to_srt3-0.1.9.0.tar.gz", hash = "sha256:0e63e99c26634c045dea0e9e7476833336f604a543b4b72689f23bf2da750d38"},
+    {file = "vtt_to_srt3-0.1.9.1-py3-none-any.whl", hash = "sha256:84e32744a85d4186091b9db7abf468fdb44d615420aee9054617c70dfd8c45b2"},
+    {file = "vtt_to_srt3-0.1.9.1.tar.gz", hash = "sha256:859d5591e74e94962314f92e60bcedf4b78ab22cfe9cd2a4ada70c50eab56c83"},
 ]
 websockets = [
     {file = "websockets-10.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:661f641b44ed315556a2fa630239adfd77bd1b11cb0b9d96ed8ad90b0b1e4978"},
@@ -1033,6 +1033,6 @@ yarl = [
     {file = "yarl-1.7.2.tar.gz", hash = "sha256:45399b46d60c253327a460e99856752009fcee5f5d3c80b2f7c0cae1c38d56dd"},
 ]
 yt-dlp = [
-    {file = "yt-dlp-2022.4.8.tar.gz", hash = "sha256:8758d016509d4574b90fbde975aa70adaef71ed5e7a195141588f6d6945205ba"},
-    {file = "yt_dlp-2022.4.8-py2.py3-none-any.whl", hash = "sha256:6edefe326b1e1478fdbe627a66203e5248a6b0dd50c101e682cf700ab70cdf72"},
+    {file = "yt-dlp-2022.5.18.tar.gz", hash = "sha256:3a7b59d2fb4b39ce8ba8e0b9c5a37fe20e5624f46a2346b4ae66ab1320e35134"},
+    {file = "yt_dlp-2022.5.18-py2.py3-none-any.whl", hash = "sha256:deec1009442312c1e2ee5298966842194d0e950b433f0d4fc844ef464b9c32a7"},
 ]
