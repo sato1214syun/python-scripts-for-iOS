@@ -8,7 +8,6 @@ from urllib.parse import urlparse
 
 import yt_dlp
 
-GET_AUTO_SUB_LIST = ["abcnews.go.com"]
 POSITIVE_ANSWERS = [
     "y",
     "Y",
@@ -112,7 +111,7 @@ if __name__ == "__main__":
     print("Investigating available subtitles...")
     ydl_opts = {"listsubtitles": True}
     DownloadVideo(ydl_opts)
-    # ダウンロードをするか確認
+    # 動画をダウンロードをするか確認
     while True:
         answer = input("\nContinue downloading?(y/n):")
         if answer in NEGATIVE_ANSWERS:
@@ -121,9 +120,20 @@ if __name__ == "__main__":
             break
         else:
             print("Answer with proper word. e.g.) 'y, Y, yes, n, N, no'")
+    # 動画をダウンロードをするか確認
+    write_auto_sub = False
+    while True:
+        answer = input("\nDownload auto generated sub?(y/n):")
+        if answer in NEGATIVE_ANSWERS:
+            write_auto_sub = False
+            break
+        elif answer in POSITIVE_ANSWERS:
+            write_auto_sub = True
+            break
+        else:
+            print("Answer with proper word. e.g.) 'y, Y, yes, n, N, no'")
     # オプションのパラメータを決定
     print("Downloading video...")
-    write_auto_sub = True if parsed_url.netloc in GET_AUTO_SUB_LIST else False
     ydl_opts = {
         "outtmpl": f"{str(SAVE_DIR_PATH)}/%(title)s.%(ext)s",
         "format": "mp4",
