@@ -151,7 +151,7 @@ class urlHandler:
             return url
 
     def inputUrlByTerminal(self):
-        url = input("urlを入力してください:")
+        url = input("\nurlを入力してください:")
         if url == "exit":
             sys.exit()
 
@@ -166,7 +166,7 @@ class urlHandler:
             url = self.getUrlForPyto()
         else:
             try:
-                url = pyperclip.paste()
+                url = pyperclip.paste
                 url = self.checkUrl(url)
             except pyperclip.PyperclipException:
                 pass
