@@ -190,7 +190,7 @@ class urlHandler:
 
 def main():
     platform_info = PlatformInfo()
-    url = urlHandler(platform_info.app).url
+    url = urlHandler(platform_info.machine, platform_info.app).url
     video_downloader = VideoDownloader()
     platform_info.save_dir_path.mkdir(parents=True, exist_ok=True)
     video_downloader.setUrl(url)
