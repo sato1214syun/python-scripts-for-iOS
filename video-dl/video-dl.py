@@ -1,16 +1,17 @@
+import re
+import subprocess
+import sys
+from importlib.util import find_spec
 from pathlib import Path
 from platform import platform
-import re
-import sys
 from urllib.parse import urlparse
-from importlib.util import find_spec
 
 import yt_dlp
 
 # iOS appのpytoで使用するモジュールをimport
 if find_spec("pasteboard"):
-    import pasteboard
     import background as bg
+    import pasteboard
 else:
     import pyperclip
 
@@ -134,8 +135,8 @@ class PlatformInfo:
 
 
 class urlHandler:
-    def __init__(self, app: None | str):
-        self.url = self.getUrl(app)
+    def __init__(self, machine: str, app: None | str):
+        self.url = self.getUrl(machine, app)
 
     def checkUrl(self, url: str) -> None | str:
         parsed_url = urlparse(url)
@@ -160,10 +161,15 @@ class urlHandler:
             print("urlが正しくありません")
         return url
 
-    def getUrl(self, app: None | str):
+    def getUrl(self, machine, app):
         url = None
-        if app == "pyto":
-            url = self.getUrlForPyto()
+        if machine == "iOS":
+            if app == "pyto":
+                url = self.getUrlForPyto()
+            else:
+                url = subprocess.check_output(
+                    "pbpaste", env={"LANG": "en_US.UTF-8"}
+                ).decode("utf-8")
         else:
             try:
                 url = pyperclip.paste()
