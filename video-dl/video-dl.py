@@ -166,7 +166,7 @@ class urlHandler:
             url = self.getUrlForPyto()
         else:
             try:
-                url = pyperclip.paste
+                url = pyperclip.paste()
                 url = self.checkUrl(url)
             except pyperclip.PyperclipException:
                 pass
