@@ -1,156 +1,200 @@
-from __future__ import annotations
-
 from pathlib import Path
 from platform import platform
 import re
 import sys
 from urllib.parse import urlparse
+from importlib.util import find_spec
 
 import yt_dlp
 
-POSITIVE_ANSWERS = [
-    "y",
-    "Y",
-    "yes",
-    "Yes",
-    "yEs",
-    "yeS",
-    "YEs",
-    "yES",
-    "YeS",
-    "YES",
-]
-
-NEGATIVE_ANSWERS = [
-    "n",
-    "N",
-    "no",
-    "No",
-    "nO",
-    "NO",
-]
+# iOS appのpytoで使用するモジュールをimport
+if find_spec("pasteboard"):
+    import pasteboard
+    import background as bg
+else:
+    import pyperclip
 
 
-def DownloadVideo(
-    ydl_opts: dict[str, str | bool | list[str] | list[dict]],
-    is_pyto: bool = False,
-) -> None:
-    if is_pyto:
-        with bg.BackgroundTask():
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
-    else:
+class Y_N_Query:
+    def __init__(self) -> None:
+        self.__POSITIVE_ANSWERS = [
+            "y",
+            "Y",
+            "yes",
+            "Yes",
+            "yEs",
+            "yeS",
+            "YEs",
+            "yES",
+            "YeS",
+            "YES",
+        ]
+
+        self.__NEGATIVE_ANSWERS = [
+            "n",
+            "N",
+            "no",
+            "No",
+            "nO",
+            "NO",
+        ]
+
+    def getAnswer(self, do_loop: bool):
+        response = None
+        while response is None:
+            ans = input("(y/n):")
+            if ans in self.__POSITIVE_ANSWERS:
+                return True
+            elif ans in self.__NEGATIVE_ANSWERS:
+                return False
+
+            print("入力が正しくありません")
+            if not do_loop:
+                break
+
+
+class VideoDownloader:
+    def __init__(self) -> None:
+        self.ydl_opts = {
+            "outtmpl": r"./%(title)s.%(ext)s",
+            "format": "mp4",
+            "postprocessors": [
+                {
+                    "key": "FFmpegSubtitlesConvertor",
+                    "format": "srt",
+                    "when": "before_dl",
+                },
+            ],
+            "writeautomaticsub": False,
+            "writesubtitles": True,
+            "subtitleslangs": ["en.*", "-live_chat"],
+            "subtitlesformat": "srt/best",
+            "continuedl": True,
+            "ignoreerrors": True,
+            "keepvideo": True,
+        }
+
+    def setOutputPath(self, save_dir: Path, file_name: str = r"%(title)s.%(ext)s"):
+        self.ydl_opts["outtmpl"] = str(save_dir) + "/" + file_name
+        return
+
+    def setUrl(self, url: str):
+        self.url = url
+        return
+
+    def writeAutomaticSub(self):
+        # ダウンロードできる字幕を確認
+        print("Investigating available subtitles...")
+        ydl_opts = {"listsubtitles": True}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+            ydl.download([self.url])
+
+        print("\nDownload auto generated sub?")
+        isEnabled = Y_N_Query().getAnswer(do_loop=True)
+        self.ydl_opts["writeautomaticsub"] = isEnabled
+        return
+
+    def download(self):
+        print(f"\nTrying to download from {self.url}\n")
+        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
+            ydl.download([self.url])
+        return
 
 
-def URLConversionForGMA(url):
-    url = re.sub(
-        r"www.goodmorningamerica.com/[a-zA-Z]+", "abcnews.go.com/GMA/News", url
-    )
-    return url
+class PlatformInfo:
+    def __init__(self):
+        self.machine = self.checkPlatform()
+        self.app = self.checkApp()
+        self.work_dir = self.getWorkingDirectory()
+
+    def checkPlatform(self):
+        if "iPhone" in platform() or "iPad" in platform():
+            return "iOS"
+        else:
+            return "PC"
+
+    def checkApp(self):
+        if self.machine == "iOS":
+            if find_spec("pasteboard"):
+                return "pyto"
+            else:
+                return "general_app"
+        return
+
+    def getWorkingDirectory(self):
+        if self.machine == "iOS":
+            WORK_DIR = Path(
+                "/private/var/mobile/Library/Mobile Documents"
+                "/com~apple~CloudDocs/Downloads"
+            )
+            DIR_NAME = "Video"
+            self.save_dir_path = WORK_DIR / DIR_NAME
+        else:
+            self.save_dir_path = Path("./video-dl/download")
+
+
+class urlHandler:
+    def __init__(self, app: None | str):
+        self.url = self.getUrl(app)
+
+    def checkUrl(self, url: str) -> None | str:
+        parsed_url = urlparse(url)
+        if len(parsed_url.scheme) < 1:
+            return
+        return url
+
+    def getUrlForPyto(self) -> None | str:
+        if sys.argv:
+            if url := self.checkUrl(sys.argv[1]):
+                return url
+        if url := self.checkUrl(pasteboard.url()):
+            return url
+
+    def inputUrlByTerminal(self):
+        url = input("urlを入力してください:")
+        if url == "exit":
+            sys.exit()
+
+        url = self.checkUrl(url)
+        if not url:
+            print("urlが正しくありません")
+        return url
+
+    def getUrl(self, app: None | str):
+        url = None
+        if app == "pyto":
+            url = self.getUrlForPyto()
+        else:
+            try:
+                url = pyperclip.paste()
+                url = self.checkUrl(url)
+            except pyperclip.PyperclipException:
+                pass
+
+        while not url:
+            url = self.inputUrlByTerminal()
+
+        return self.URLConversionForGMA(url)
+
+    def URLConversionForGMA(self, url):
+        return re.sub(
+            r"www.goodmorningamerica.com/[a-zA-Z]+", "abcnews.go.com/GMA/News", url
+        )
+
+
+def main():
+    platform_info = PlatformInfo()
+    url = urlHandler(platform_info.app).url
+    video_downloader = VideoDownloader()
+    platform_info.save_dir_path.mkdir(parents=True, exist_ok=True)
+    video_downloader.setUrl(url)
+    video_downloader.setOutputPath(platform_info.save_dir_path)
+    video_downloader.writeAutomaticSub()
+
+    print("Downloading video...")
+    video_downloader.download()
+    print("finish")
 
 
 if __name__ == "__main__":
-    # iOSで動いているかの判定
-    is_iOS = False
-    is_pyto = False
-    if "iPhone" in platform() or "iPad" in platform():
-        is_iOS = True
-        try:
-            import background as bg
-            import pasteboard
-            is_pyto = True
-        except ImportError:
-            import pyperclip
-            from pyperclip import PyperclipException
-    else:
-        import pyperclip
-        from pyperclip import PyperclipException
-
-    if is_iOS:
-        WORK_DIR = Path(
-            "/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads"
-        )
-        DIR_NAME = "Video"
-        SAVE_DIR_PATH = WORK_DIR / DIR_NAME
-    else:
-        SAVE_DIR_PATH = Path("./video-dl/download")
-
-    url = ""
-    if is_pyto:
-        input_argv = sys.argv
-        if len(input_argv) > 1:
-            url = input_argv[1]
-        else:
-            url = pasteboard.url()
-
-    parsed_url = urlparse(url)
-    if len(parsed_url.scheme) < 1:
-        try:
-            url = pyperclip.paste()
-        except PyperclipException:
-            url = input("urlを入力してください:")
-
-    parsed_url = urlparse(url)
-    print(f"{url}\nからダウンロードします。")
-    if len(parsed_url.scheme) < 1:
-        print("urlが正しくないため終了します")
-        sys.exit()
-
-    if parsed_url.netloc == "www.goodmorningamerica.com":
-        url = URLConversionForGMA(url)
-        parsed_url = urlparse(url)
-    print(f"\nTrying to download from {url}\n")
-
-    # 保存ディレクトリを作成
-    SAVE_DIR_PATH.mkdir(parents=True, exist_ok=True)
-
-    ydl_opts: dict[str, str | bool | list[str] | list[dict]]
-    # ダウンロードできる字幕を確認
-    print("Investigating available subtitles...")
-    ydl_opts = {"listsubtitles": True}
-    DownloadVideo(ydl_opts)
-    # 動画をダウンロードをするか確認
-    while True:
-        answer = input("\nContinue downloading?(y/n):")
-        if answer in NEGATIVE_ANSWERS:
-            sys.exit()
-        elif answer in POSITIVE_ANSWERS:
-            break
-        else:
-            print("Answer with proper word. e.g.) 'y, Y, yes, n, N, no'")
-    # 動画をダウンロードをするか確認
-    write_auto_sub = False
-    while True:
-        answer = input("\nDownload auto generated sub?(y/n):")
-        if answer in NEGATIVE_ANSWERS:
-            write_auto_sub = False
-            break
-        elif answer in POSITIVE_ANSWERS:
-            write_auto_sub = True
-            break
-        else:
-            print("Answer with proper word. e.g.) 'y, Y, yes, n, N, no'")
-    # オプションのパラメータを決定
-    print("Downloading video...")
-    ydl_opts = {
-        "outtmpl": f"{str(SAVE_DIR_PATH)}/%(title)s.%(ext)s",
-        "format": "mp4",
-        "postprocessors": [
-            {
-                "key": "FFmpegSubtitlesConvertor",
-                "format": "srt",
-                "when": "before_dl",
-            },
-        ],
-        "writesubtitles": True,
-        "writeautomaticsub": write_auto_sub,
-        "subtitleslangs": ["en.*", "-live_chat"],
-        "subtitlesformat": "srt/best",
-        "continuedl": True,
-        "ignoreerrors": True,
-        "keepvideo": True,
-    }
-    DownloadVideo(ydl_opts, is_pyto=is_pyto)
-    print("finish")
+    main()
