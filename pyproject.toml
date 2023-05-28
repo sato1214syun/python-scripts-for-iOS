@@ -1,22 +1,19 @@
-[tool.poetry]
+[project]
 name = "python-scripts-for-ios"
 version = "0.1.0"
-description = ""
-authors = ["sato1214syun <sato1214syun@gmail.com>"]
-
-[tool.poetry.dependencies]
-python = "^3.11"
-tqdm = "^4.64.1"
-beautifulsoup4 = "^4.11.1"
-lxml = "^4.9.2"
-urllib3 = "^1.26.13"
-NHentai-API = "^0.0.19"
-pysrt = "^1.1.2"
-vtt-to-srt3 = "^0.1.9.2"
-pyperclip = "^1.8.2"
-yt-dlp = "^2023.01.06"
-requests = "^2.28.1"
+description = "Add a short description here"
+authors = [
+    { name = "sato1214syun", email = "sato1214syun@gmail.com" }
+]
+dependencies = ["tqdm~=4.65.0", "beautifulsoup4~=4.12.2", "lxml~=4.9.2", "urllib3~=1.26.13", "pysrt~=1.1.2", "vtt-to-srt3~=0.2.0.1", "pyperclip~=1.8.2", "yt-dlp~=2023.3.4", "requests~=2.31.0", "nhentai~=0.5.3"]
+readme = "README.md"
+requires-python = ">= 3.11"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+[tool.hatch.metadata]
+allow-direct-references = true
